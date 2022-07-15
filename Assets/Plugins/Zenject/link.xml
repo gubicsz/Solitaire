@@ -1,0 +1,15 @@
+<linker>
+    <assembly fullname="zenject">
+        <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
+        <type fullname="Zenject.SceneContextRegistry" preserve="all"/>
+        <type fullname="Zenject.PlaceholderFactory*" preserve="all"/>
+        <type fullname="Zenject.SceneContextRegistryAdderAndRemover" preserve="all"/>
+        <type fullname="Zenject.SignalBusInstaller" preserve="all" />
+        <type fullname="Zenject.SignalDeclarationAsyncInitializer" preserve="all" />
+        <type fullname="Zenject.SignalDeclaration" preserve="all" />
+        <type fullname="Zenject.SignalSubscription" preserve="all" />
+        <type fullname="Zenject.SignalSubscription/Pool" preserve="all" />
+        <type fullname="Zenject.SignalBus" preserve="all" />
+        <type fullname="*/Factory*" preserve="all" />
+    </assembly>
+</linker>
