@@ -1,0 +1,30 @@
+using Solitaire.Models;
+using UnityEngine;
+using Zenject;
+
+namespace Solitaire.Services
+{
+    public class OrientationService : ITickable
+    {
+        [Inject] OrientationState _orientation;
+
+        public void Tick()
+        {
+
+#if UNITY_EDITOR
+            Orientation orientation = Screen.width > Screen.height ?
+                Orientation.Landscape : Orientation.Portrait;
+#else
+            Orientation orientation =
+                Screen.orientation == ScreenOrientation.LandscapeLeft ||
+                Screen.orientation == ScreenOrientation.LandscapeRight ?
+                Orientation.Landscape : Orientation.Portrait;
+#endif
+
+            if (_orientation.State.Value != orientation)
+            {
+                _orientation.State.Value = orientation;
+            }
+        }
+    }
+}

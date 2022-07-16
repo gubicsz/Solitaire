@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Game
+  m_Name: UI
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -32,9 +32,18 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
+    - {fileID: 2800000, guid: 59a47963453327f46918ad2fc98ae19a, type: 3}
+    - {fileID: 2800000, guid: b11674f92b8965f47a6a0664cafe9bc7, type: 3}
+    - {fileID: 2800000, guid: fd813a35c79dd5e4f8453707f5e2756b, type: 3}
+    - {fileID: 2800000, guid: 48592fd8614b490479ad9cd6078dd366, type: 3}
+    - {fileID: 2800000, guid: 990ed7ad4d7b5704f9b46bfedb4f2a25, type: 3}
+    - {fileID: 2800000, guid: 68b4ccb48c07a77449dde39bf83a28dd, type: 3}
+    - {fileID: 2800000, guid: 9e463dd248dea074bbdc918908553abc, type: 3}
+    - {fileID: 2800000, guid: 374918c612983d44781af9316e8e6dd7, type: 3}
     - {fileID: 2800000, guid: 5fc874c9257c2ec41958b65c85388c35, type: 3}
     - {fileID: 2800000, guid: 66dc5d9a9f6d57a4cb810809e9445ba9, type: 3}
-    - {fileID: 2800000, guid: d55bf3fd1dbaf2846bc980ba52847269, type: 3}
+    - {fileID: 2800000, guid: e59993ca3c5985246b18fd6040af7eca, type: 3}
+    - {fileID: 2800000, guid: 56d45fbb5243be14bac0585a5e5d10c9, type: 3}
     - {fileID: 2800000, guid: 004c35787ee710144bec5608cddc65c3, type: 3}
     - {fileID: 2800000, guid: d55bf3fd1dbaf2846bc980ba52847269, type: 3}
     - {fileID: 2800000, guid: 75bd56b9d05411d4186d380f726d9d65, type: 3}
@@ -44,34 +53,72 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 8e4c3d11415a6434090b2ab72db2a502, type: 3}
     - {fileID: 2800000, guid: 92a4124b115e0fb43baa705571cd0419, type: 3}
     - {fileID: 2800000, guid: 0f6aaaba6307bdc4688ee9d07629c5c6, type: 3}
+    - {fileID: 2800000, guid: b7e3352ebe8c309468d71c2e0d7d12cc, type: 3}
+    - {fileID: 2800000, guid: 2d0b8249138a35148991c884c0af1278, type: 3}
+    - {fileID: 2800000, guid: c5eb4b2ee6c1c624e982b99155a74e00, type: 3}
+    - {fileID: 2800000, guid: 048cf504edcdc8e4ba0df4ed772cc2f2, type: 3}
+    - {fileID: 2800000, guid: 098a215467c5eca4f9ad8e9de122f484, type: 3}
+    - {fileID: 2800000, guid: 0449bf90521d4be4a84a037061f42e6d, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 0449bf90521d4be4a84a037061f42e6d, type: 3}
   - {fileID: 21300000, guid: 8e4c3d11415a6434090b2ab72db2a502, type: 3}
   - {fileID: 21300000, guid: f6eb36f195506984dad1004fc58ac552, type: 3}
+  - {fileID: 21300000, guid: 9e463dd248dea074bbdc918908553abc, type: 3}
+  - {fileID: 21300000, guid: 59a47963453327f46918ad2fc98ae19a, type: 3}
+  - {fileID: 21300000, guid: 048cf504edcdc8e4ba0df4ed772cc2f2, type: 3}
+  - {fileID: 21300000, guid: 098a215467c5eca4f9ad8e9de122f484, type: 3}
+  - {fileID: 21300000, guid: 68b4ccb48c07a77449dde39bf83a28dd, type: 3}
+  - {fileID: 21300000, guid: fd813a35c79dd5e4f8453707f5e2756b, type: 3}
+  - {fileID: 21300000, guid: 374918c612983d44781af9316e8e6dd7, type: 3}
   - {fileID: 21300000, guid: 004c35787ee710144bec5608cddc65c3, type: 3}
+  - {fileID: 21300000, guid: 48592fd8614b490479ad9cd6078dd366, type: 3}
+  - {fileID: 21300000, guid: 2d0b8249138a35148991c884c0af1278, type: 3}
   - {fileID: 21300000, guid: 75bd56b9d05411d4186d380f726d9d65, type: 3}
   - {fileID: 21300000, guid: 5fc874c9257c2ec41958b65c85388c35, type: 3}
+  - {fileID: 21300000, guid: b11674f92b8965f47a6a0664cafe9bc7, type: 3}
   - {fileID: 21300000, guid: 66dc5d9a9f6d57a4cb810809e9445ba9, type: 3}
   - {fileID: 21300000, guid: b5cb72ba1a22e64449864d10eb028e02, type: 3}
   - {fileID: 21300000, guid: 0f6aaaba6307bdc4688ee9d07629c5c6, type: 3}
+  - {fileID: 21300000, guid: e59993ca3c5985246b18fd6040af7eca, type: 3}
   - {fileID: 21300000, guid: 92a4124b115e0fb43baa705571cd0419, type: 3}
   - {fileID: 21300000, guid: 7edf4bab82f281248ac2981032352abd, type: 3}
+  - {fileID: 21300000, guid: 56d45fbb5243be14bac0585a5e5d10c9, type: 3}
+  - {fileID: 21300000, guid: 990ed7ad4d7b5704f9b46bfedb4f2a25, type: 3}
   - {fileID: 21300000, guid: d55bf3fd1dbaf2846bc980ba52847269, type: 3}
+  - {fileID: 21300000, guid: b7e3352ebe8c309468d71c2e0d7d12cc, type: 3}
+  - {fileID: 21300000, guid: c5eb4b2ee6c1c624e982b99155a74e00, type: 3}
   m_PackedSpriteNamesToIndex:
+  - options-bar
   - podium
   - open-options
+  - game-name
+  - button_new game
+  - fund-options
+  - X esc
+  - spades
+  - diamonds
+  - facebook
   - classification
+  - flowers
+  - choice-options
   - home
   - button-rectangle
+  - continue_button
   - button-round
   - options
   - undo
+  - i
   - star
   - new-game
+  - x
+  - hearts
   - hints
+  - background-selection
+  - dark-background
   m_RenderDataMap: {}
-  m_Tag: Game
+  m_Tag: UI
   m_IsVariant: 0
