@@ -48,6 +48,8 @@ namespace Solitaire.Models
         IList<Pile> _pileFoundations;
         IList<Pile> _pileTableaus;
         IList<Card> _cards;
+        bool _hasPlayed;
+        bool _hasWon;
 
         public Game()
         {
@@ -80,7 +82,8 @@ namespace Solitaire.Models
             // Refill stock pile from waste pile
             if (!_pileStock.HasCards && _pileWaste.HasCards)
             {
-                var refillStockCommand = new RefillStockCommand(_pileStock, _pileWaste, _pointsService, _gameConfig);
+                var refillStockCommand = new RefillStockCommand(
+                    _pileStock, _pileWaste, _pointsService, _gameConfig);
                 refillStockCommand.Execute();
                 _commandService.AddCommand(refillStockCommand);
                 _movesService.Increment();
@@ -197,6 +200,9 @@ namespace Solitaire.Models
             _movesService.Reset();
             _pointsService.Reset();
             _commandService.Reset();
+
+            _hasPlayed = true;
+            _hasWon = false;
         }
 
         private void ShuffleCards()
@@ -227,7 +233,7 @@ namespace Solitaire.Models
                         topCard.Flip();
                     }
 
-                    await UniTask.DelayFrame(5);
+                    await UniTask.DelayFrame(3);
                 }
             }
             
@@ -237,40 +243,44 @@ namespace Solitaire.Models
 
         private async UniTask WinAsync()
         {
-            // Start win
+            // Start win sequence
             _gameState.State.Value = State.Win;
+            _hasWon = true;
+
             int cardsInTableaus;
 
             do
             {
                 cardsInTableaus = 0;
 
+                // Check each tableau pile
                 for (int i = 0; i < _pileTableaus.Count; i++)
                 {
-                    Pile pileTableaus = _pileTableaus[i];
-                    Card topCard = pileTableaus.TopCard();
-                    cardsInTableaus += pileTableaus.Cards.Count;
+                    Pile pileTableau = _pileTableaus[i];
+                    Card topCard = pileTableau.TopCard();
+                    cardsInTableaus += pileTableau.Cards.Count;
 
+                    // Skip empty pile
                     if (topCard == null)
                     {
                         continue;
                     }
 
-                    Pile pileTarget = CheckPilesForMove(_pileFoundations, topCard);
+                    // Skip card that cannot be moved to a foundation pile
+                    Pile pileFoundation = CheckPilesForMove(_pileFoundations, topCard);
 
-                    if (pileTarget == null)
+                    if (pileFoundation == null)
                     {
                         continue;
                     }
 
-                    InteractCard(topCard, pileTarget);
-                    await UniTask.Delay(100);
+                    // Move card to the foundation
+                    InteractCard(topCard, pileFoundation);
+                    await UniTask.DelayFrame(3);
                 }
 
             }
             while (cardsInTableaus > 0);
-
-            UnityEngine.Debug.Log("WON");//TODO: more test needed
         }
 
         private void Restart()
@@ -288,7 +298,14 @@ namespace Solitaire.Models
 
         private void Continue()
         {
-            _gameState.State.Value = State.Playing;
+            if (_hasPlayed && !_hasWon)
+            {
+                _gameState.State.Value = State.Playing;
+            }
+            else
+            {
+                NewMatch();
+            }
         }
     }
 }

@@ -27,8 +27,9 @@ namespace Solitaire.Models
 
         List<Card> _splitCards;
 
-        const float _offsetDepth = 0.002f;
-        const float _offsetVertical = 0.2f;
+        const float _offsetDepth = 0.005f;
+        const float _offsetVertFaceUp = 0.5f;
+        const float _offsetVertFaceDown = 0.2f;
 
         public Pile()
         {
@@ -201,9 +202,18 @@ namespace Solitaire.Models
                     break;
 
                 case CardArrangement.Waterfall:
+                    float verticalOffset = 0f;
+
+                    if (card.Order.Value > 0)
+                    {
+                        Card prevCard = card.Pile.Cards[card.Order.Value - 1];
+                        verticalOffset = Mathf.Abs(prevCard.Position.Value.y - card.Pile.Position.y) +
+                            (prevCard.IsFaceUp.Value ? _offsetVertFaceUp : _offsetVertFaceDown);
+                    }
+
                     card.Position.Value = Position +
                         _offsetDepth * (card.Order.Value + 1) * Vector3.back +
-                        _offsetVertical * card.Order.Value * Vector3.down;
+                        verticalOffset * Vector3.down;
                     break;
 
                 default:

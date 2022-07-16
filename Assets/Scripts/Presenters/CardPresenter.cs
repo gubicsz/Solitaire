@@ -29,9 +29,11 @@ namespace Solitaire.Presenters
 
         BoxCollider2D _collider;
         IMemoryPool _pool;
+        float _lastClick;
 
         public Card Card => _card;
 
+        const float _doubleClickInterval = 0.4f;
         const float moveEpsilon = 0.00001f;
 
         void Start()
@@ -151,13 +153,15 @@ namespace Solitaire.Presenters
             {
                 return;
             }
-            
-            if ((_card.IsFaceUp.Value && eventData.clickCount == 2) ||
-                (!_card.IsFaceUp.Value && eventData.clickCount == 1))
+
+            if (!_card.IsFaceUp.Value ||
+                (_card.IsFaceUp.Value && (_lastClick + _doubleClickInterval) > Time.time))
             {
                 Pile pile = _game.FindValidPileForCard(_card);
                 _game.InteractCard(_card, pile);
             }
+
+            _lastClick = Time.time;
         }
 
         #endregion IEventSystemHandlers

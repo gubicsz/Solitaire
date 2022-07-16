@@ -10,6 +10,13 @@ namespace Solitaire.Installers
     {
         [SerializeField] GameObject _cardPrefab;
 
+        private void Awake()
+        {
+            // Initialize
+            Application.targetFrameRate = 60;
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        }
+
         public override void InstallBindings()
         {
             // Services
