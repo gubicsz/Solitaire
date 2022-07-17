@@ -34,7 +34,8 @@ namespace Solitaire.Presenters
         public Card Card => _card;
 
         const float _doubleClickInterval = 0.4f;
-        const float moveEpsilon = 0.00001f;
+        const float _moveEpsilon = 0.00001f;
+        const int _animOrder = 100;
 
         void Start()
         {
@@ -48,12 +49,15 @@ namespace Solitaire.Presenters
                 .Subscribe(isFaceUp => AnimateFlip(isFaceUp)).AddTo(this);
 
             // Animate card movement
-            _card.Position.Where(position => Vector3.SqrMagnitude(position - transform.position) > moveEpsilon)
+            _card.Position.Where(position => Vector3.SqrMagnitude(position - transform.position) > _moveEpsilon)
                 .Subscribe(position => AnimateMove(position)).AddTo(this);
         }
 
         void AnimateFlip(bool isFaceUp)
         {
+            // Scale X from 1 to 0 then back to 1 again,
+            // switching beetween front and back sprites in the middle.
+            // This gives the illusion of flipping the card in 2D.
             transform.DOScaleX(0f, _config.AnimationDuration / 2f)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetEase(Ease.Linear)
@@ -69,11 +73,21 @@ namespace Solitaire.Presenters
         {
             if (_card.IsDragged)
             {
+                // Update position instanty while the card is being dragged
                 transform.position = position;
             }
             else
             {
-                transform.DOLocalMove(position, _config.AnimationDuration);
+                // Move card over time to the target position while changing
+                // order at the start and end so the cards are overlayed correctly.
+                transform.DOLocalMove(position, _config.AnimationDuration)
+                    .SetEase(Ease.OutQuad)
+                    .OnStart(() =>
+                    {
+                        _card.OrderToRestore = _card.Order.Value;
+                        _card.Order.Value = _animOrder + _card.OrderToRestore;
+                    })
+                    .OnComplete(() => _card.Order.Value = _card.OrderToRestore);
             }
         }
 

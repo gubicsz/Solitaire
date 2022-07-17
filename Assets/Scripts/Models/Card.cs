@@ -48,7 +48,7 @@ namespace Solitaire.Models
         public IntReactiveProperty Order { get; private set; } = new IntReactiveProperty();
         public Vector3 DragOrigin { get; set; }
         public Vector3 DragOffset { get; set; }
-        public int DragOrder { get; set; }
+        public int OrderToRestore { get; set; }
         public bool IsDragged { get; set; }
         public bool IsInPile => Pile != null;
         public bool IsDraggable => IsFaceUp.Value;
@@ -67,7 +67,7 @@ namespace Solitaire.Models
             Order.Value = 0;
             DragOrigin = Vector3.zero;
             DragOffset = Vector3.zero;
-            DragOrder = 0;
+            OrderToRestore = 0;
             IsDragged = false;
         }
 
