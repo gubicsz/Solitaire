@@ -27,6 +27,8 @@ namespace Solitaire.Presenters
         [Inject] Game _game;
         [Inject] DragAndDropHandler _dndHandler;
 
+        Tweener _tweenScale;
+        Tweener _tweenMove;
         BoxCollider2D _collider;
         IMemoryPool _pool;
         float _lastClick;
@@ -58,7 +60,8 @@ namespace Solitaire.Presenters
             // Scale X from 1 to 0 then back to 1 again,
             // switching beetween front and back sprites in the middle.
             // This gives the illusion of flipping the card in 2D.
-            transform.DOScaleX(0f, _config.AnimationDuration / 2f)
+            _tweenScale?.Kill(true);
+            _tweenScale = transform.DOScaleX(0f, _config.AnimationDuration / 2f)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetEase(Ease.Linear)
                 .OnStepComplete(() =>
@@ -80,7 +83,8 @@ namespace Solitaire.Presenters
             {
                 // Move card over time to the target position while changing
                 // order at the start and end so the cards are overlayed correctly.
-                transform.DOLocalMove(position, _config.AnimationDuration)
+                _tweenMove?.Kill(true);
+                _tweenMove = transform.DOLocalMove(position, _config.AnimationDuration)
                     .SetEase(Ease.OutQuad)
                     .OnStart(() =>
                     {

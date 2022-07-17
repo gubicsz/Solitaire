@@ -17,6 +17,7 @@ namespace Solitaire.Models
         {
             Stack,
             Waterfall,
+            TopThree,
         }
 
         public PileType Type { get; private set; }
@@ -30,6 +31,7 @@ namespace Solitaire.Models
         const float _offsetDepth = 0.005f;
         const float _offsetVertFaceUp = 0.5f;
         const float _offsetVertFaceDown = 0.2f;
+        const float _offsetHorizontal = 0.3f;
 
         public Pile()
         {
@@ -121,7 +123,19 @@ namespace Solitaire.Models
             Cards.Add(card);
 
             card.Order.Value = Cards.Count - 1;
-            UpdateCardPosition(card);
+
+            if (Arrangement == CardArrangement.TopThree && Cards.Count > 3)
+            {
+                // Update the position of the last three cards
+                for (int i = Cards.Count - 3; i < Cards.Count; i++)
+                {
+                    UpdateCardPosition(Cards[i]);
+                }
+            }
+            else
+            {
+                UpdateCardPosition(card);
+            }
         }
 
         public void RemoveCard(Card card)
@@ -194,26 +208,45 @@ namespace Solitaire.Models
 
         private void UpdateCardPosition(Card card)
         {
+            int index = Cards.IndexOf(card);
+
             switch (Arrangement)
             {
                 case CardArrangement.Stack:
                     card.Position.Value = Position +
-                        _offsetDepth * (card.Order.Value + 1) * Vector3.back;
+                        _offsetDepth * (index + 1) * Vector3.back;
                     break;
 
                 case CardArrangement.Waterfall:
                     float verticalOffset = 0f;
 
-                    if (card.Order.Value > 0)
+                    if (index > 0)
                     {
-                        Card prevCard = card.Pile.Cards[card.Order.Value - 1];
-                        verticalOffset = Mathf.Abs(prevCard.Position.Value.y - card.Pile.Position.y) +
+                        Card prevCard = Cards[index - 1];
+                        verticalOffset = Mathf.Abs(prevCard.Position.Value.y - Position.y) +
                             (prevCard.IsFaceUp.Value ? _offsetVertFaceUp : _offsetVertFaceDown);
                     }
 
                     card.Position.Value = Position +
-                        _offsetDepth * (card.Order.Value + 1) * Vector3.back +
+                        _offsetDepth * (index + 1) * Vector3.back +
                         verticalOffset * Vector3.down;
+                    break;
+
+                case CardArrangement.TopThree:
+                    float horizontalOffset;
+
+                    if (Cards.Count > 3)
+                    {
+                        horizontalOffset = (3 - Mathf.Min(3, Cards.Count - index)) * _offsetHorizontal;
+                    }
+                    else
+                    {
+                        horizontalOffset = index * _offsetHorizontal;
+                    }
+
+                    card.Position.Value = Position +
+                        _offsetDepth * (index + 1) * Vector3.back +
+                        horizontalOffset * Vector3.right;
                     break;
 
                 default:

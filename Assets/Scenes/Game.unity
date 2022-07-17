@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -675,8 +675,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5850965554809265795, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
+      propertyPath: Arrangement
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850965554809265795, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: PosPortrait.x
-      value: 2.3
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 5850965554809265795, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: PosPortrait.y
@@ -684,7 +688,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5850965554809265795, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: PosLandscape.x
-      value: 5.3
+      value: 4.7
       objectReference: {fileID: 0}
     - target: {fileID: 5850965554809265795, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: PosLandscape.y
@@ -700,7 +704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8521772721656160862, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.3
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 8521772721656160862, guid: 776fc0bfd768b0643a220b97f9ad4060, type: 3}
       propertyPath: m_LocalPosition.y
