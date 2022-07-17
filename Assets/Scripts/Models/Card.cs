@@ -50,8 +50,11 @@ namespace Solitaire.Models
         public Vector3 DragOffset { get; set; }
         public int OrderToRestore { get; set; }
         public bool IsDragged { get; set; }
+
         public bool IsInPile => Pile != null;
-        public bool IsDraggable => IsFaceUp.Value;
+        public bool IsOnTop => Pile.TopCard() == this;
+        public bool IsMoveable => IsInPile && ((Pile.IsWaste && IsOnTop && IsFaceUp.Value) || (!Pile.IsWaste && IsFaceUp.Value));
+        public bool IsDrawable => IsInPile && Pile.IsStock && IsOnTop && !IsFaceUp.Value;
 
         public void Init(Suits suit, Types type)
         {

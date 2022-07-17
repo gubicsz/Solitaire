@@ -38,22 +38,22 @@ namespace Solitaire.Commands
             }
 
             // Scoring
-            if (_pileSource.Type == Pile.PileType.Waste)
+            if (_pileSource.IsWaste)
             {
-                if (_pileTarget.Type == Pile.PileType.Tableau)
+                if (_pileTarget.IsTableau)
                 {
                     _pointsService.Add(_gameConfig.PointsWasteToTableau);
                 }
-                else if (_pileTarget.Type == Pile.PileType.Foundation)
+                else if (_pileTarget.IsFoundation)
                 {
                     _pointsService.Add(_gameConfig.PointsWasteToFoundation);
                 }
             }
-            else if (_pileSource.Type == Pile.PileType.Tableau && _pileTarget.Type == Pile.PileType.Foundation)
+            else if (_pileSource.IsTableau && _pileTarget.IsFoundation)
             {
                 _pointsService.Add(_gameConfig.PointsTableauToFoundation);
             }
-            else if (_pileSource.Type == Pile.PileType.Foundation && _pileTarget.Type == Pile.PileType.Tableau)
+            else if (_pileSource.IsFoundation && _pileTarget.IsTableau)
             {
                 _pointsService.Add(_gameConfig.PointsFoundationToTableau);
             }
@@ -61,7 +61,7 @@ namespace Solitaire.Commands
             // Reveal card below if needed
             Card cardBelow = _pileSource.TopCard();
 
-            if (_pileSource.Type == Pile.PileType.Tableau &&
+            if (_pileSource.IsTableau &&
                 cardBelow != null && !cardBelow.IsFaceUp.Value)
             {
                 cardBelow.Flip();
@@ -75,7 +75,7 @@ namespace Solitaire.Commands
             // Hide top card of the source tableau pile
             Card cardTop = _pileSource.TopCard();
 
-            if (_pileSource.Type == Pile.PileType.Tableau && _wasTopCardFlipped &&
+            if (_pileSource.IsTableau && _wasTopCardFlipped &&
                 cardTop != null && cardTop.IsFaceUp.Value)
             {
                 cardTop.Flip();
@@ -83,22 +83,22 @@ namespace Solitaire.Commands
             }
 
             // Scoring
-            if (_pileSource.Type == Pile.PileType.Waste)
+            if (_pileSource.IsWaste)
             {
-                if (_pileTarget.Type == Pile.PileType.Tableau)
+                if (_pileTarget.IsTableau)
                 {
                     _pointsService.Add(-_gameConfig.PointsWasteToTableau);
                 }
-                else if (_pileTarget.Type == Pile.PileType.Foundation)
+                else if (_pileTarget.IsFoundation)
                 {
                     _pointsService.Add(-_gameConfig.PointsWasteToFoundation);
                 }
             }
-            else if (_pileSource.Type == Pile.PileType.Tableau && _pileTarget.Type == Pile.PileType.Foundation)
+            else if (_pileSource.IsTableau && _pileTarget.IsFoundation)
             {
                 _pointsService.Add(-_gameConfig.PointsTableauToFoundation);
             }
-            else if (_pileSource.Type == Pile.PileType.Foundation && _pileTarget.Type == Pile.PileType.Tableau)
+            else if (_pileSource.IsFoundation && _pileTarget.IsTableau)
             {
                 _pointsService.Add(-_gameConfig.PointsFoundationToTableau);
             }

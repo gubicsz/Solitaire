@@ -79,40 +79,44 @@ namespace Solitaire.Models
 
         public void RefillStock()
         {
-            // Refill stock pile from waste pile
-            if (!_pileStock.HasCards && _pileWaste.HasCards)
-            {
-                var refillStockCommand = new RefillStockCommand(
-                    _pileStock, _pileWaste, _pointsService, _gameConfig);
-                refillStockCommand.Execute();
-                _commandService.AddCommand(refillStockCommand);
-                _movesService.Increment();
-            }
-        }
-
-        public void InteractCard(Card card, Pile pile)
-        {
-            if (card == null || !card.IsInPile)
+            if (_pileStock.HasCards || !_pileWaste.HasCards)
             {
                 return;
             }
 
-            if (card.IsFaceUp.Value && pile != null)
+            // Refill stock pile from waste pile
+            var command = new RefillStockCommand(_pileStock, _pileWaste, _pointsService, _gameConfig);
+            command.Execute();
+            _commandService.AddCommand(command);
+            _movesService.Increment();
+        }
+
+        public void MoveCard(Card card, Pile pile)
+        {
+            if (card == null || pile == null)
             {
-                // Move card to pile
-                var moveCardCommand = new MoveCardCommand(card, pile, _pointsService, _gameConfig);
-                moveCardCommand.Execute();
-                _commandService.AddCommand(moveCardCommand);
-                _movesService.Increment();
+                return;
             }
-            else if (!card.IsFaceUp.Value && card.Pile.Type == Pile.PileType.Stock && card.Pile.TopCard() == card)
+
+            // Move card to pile
+            var command = new MoveCardCommand(card, pile, _pointsService, _gameConfig);
+            command.Execute();
+            _commandService.AddCommand(command);
+            _movesService.Increment();
+        }
+
+        public void DrawCard(Card card)
+        {
+            if (card == null)
             {
-                // Draw card from stock
-                var drawCardCommand = new DrawCardCommand(_pileStock, _pileWaste, card);
-                drawCardCommand.Execute();
-                _commandService.AddCommand(drawCardCommand);
-                _movesService.Increment();
+                return;
             }
+
+            // Draw card from stock
+            var command = new DrawCardCommand(_pileStock, _pileWaste, card);
+            command.Execute();
+            _commandService.AddCommand(command);
+            _movesService.Increment();
         }
 
         public void DetectWinCondition()
@@ -275,7 +279,7 @@ namespace Solitaire.Models
                     }
 
                     // Move card to the foundation
-                    InteractCard(topCard, pileFoundation);
+                    MoveCard(topCard, pileFoundation);
                     await UniTask.DelayFrame(3);
                 }
 

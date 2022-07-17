@@ -24,7 +24,12 @@ namespace Solitaire.Models
         public CardArrangement Arrangement { get; private set; }
         public Vector3 Position { get; private set; }
         public List<Card> Cards { get; private set; }
+
         public bool HasCards => Cards.Count > 0;
+        public bool IsStock => Type == PileType.Stock;
+        public bool IsWaste => Type == PileType.Waste;
+        public bool IsFoundation => Type == PileType.Foundation;
+        public bool IsTableau => Type == PileType.Tableau;
 
         List<Card> _splitCards;
 
@@ -80,7 +85,7 @@ namespace Solitaire.Models
                     }
 
                     if (topCard != null && topCard.Suit == card.Suit &&
-                        topCard.Type == card.Type - 1 && card.Pile.TopCard() == card)
+                        topCard.Type == card.Type - 1 && card.IsOnTop)
                     {
                         return true;
                     }

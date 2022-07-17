@@ -43,13 +43,13 @@ namespace Solitaire.Presenters
                 _pile.CanAddCard(cardPresenter.Card))
             {
                 _dndHandler.Drop();
-                _game.InteractCard(cardPresenter.Card, _pile);
+                _game.MoveCard(cardPresenter.Card, _pile);
             }
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_pile.Type == Pile.PileType.Stock && eventData?.clickCount == 1)
+            if (_pile.IsStock && eventData?.clickCount == 1)
             {
                 _game.RefillStock();
             }

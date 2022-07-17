@@ -126,7 +126,7 @@ namespace Solitaire.Presenters
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (_card.IsDraggable)
+            if (_card.IsMoveable)
             {
                 _dndHandler.BeginDrag(eventData, _card.Pile.SplitAt(_card));
                 _collider.enabled = false;
@@ -135,7 +135,7 @@ namespace Solitaire.Presenters
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (_card.IsDraggable)
+            if (_card.IsMoveable)
             {
                 _dndHandler.Drag(eventData);
             }
@@ -143,7 +143,7 @@ namespace Solitaire.Presenters
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (_card.IsDraggable)
+            if (_card.IsMoveable)
             {
                 _dndHandler.EndDrag();
                 _collider.enabled = true;
@@ -161,7 +161,7 @@ namespace Solitaire.Presenters
                 _card.Pile.CanAddCard(cardPresenter.Card))
             {
                 _dndHandler.Drop();
-                _game.InteractCard(cardPresenter.Card, _card.Pile);
+                _game.MoveCard(cardPresenter.Card, _card.Pile);
             }
         }
 
@@ -172,11 +172,14 @@ namespace Solitaire.Presenters
                 return;
             }
 
-            if (!_card.IsFaceUp.Value ||
-                (_card.IsFaceUp.Value && (_lastClick + _doubleClickInterval) > Time.time))
+            if (_card.IsDrawable)
+            {
+                _game.DrawCard(_card);
+            }
+            else if (_card.IsMoveable && (_lastClick + _doubleClickInterval) > Time.time)
             {
                 Pile pile = _game.FindValidPileForCard(_card);
-                _game.InteractCard(_card, pile);
+                _game.MoveCard(_card, pile);
             }
 
             _lastClick = Time.time;
