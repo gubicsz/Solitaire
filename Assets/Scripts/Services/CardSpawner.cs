@@ -7,14 +7,15 @@ namespace Solitaire.Services
 {
     public class CardSpawner
     {
-        public List<CardPresenter> Cards { get; private set; } = new List<CardPresenter>(52);
+        public IList<CardPresenter> Cards { get; private set; } = new List<CardPresenter>(52);
 
+        private IList<CardPresenter> _tempCopies;
         private CardPresenter.Factory _factory;
 
         public CardSpawner(CardPresenter.Factory factory)
         {
-            // Set references
             _factory = factory;
+            _tempCopies = new List<CardPresenter>();
         }
 
         public void SpawnAll()
@@ -24,7 +25,7 @@ namespace Solitaire.Services
             {
                 foreach (Card.Types type in Enum.GetValues(typeof(Card.Types)))
                 {
-                    Cards.Add(_factory.Create(suit, type));
+                    Cards.Add(Spawn(suit, type));
                 }
             }
         }
@@ -41,17 +42,52 @@ namespace Solitaire.Services
             Cards.Clear();
         }
 
+        public CardPresenter Spawn(Card.Suits suit, Card.Types type)
+        {
+            return _factory.Create(suit, type);
+        }
+
         public void Despawn(CardPresenter card)
         {
             // Handle error
-            if (card == null || !Cards.Contains(card))
+            if (card == null)
             {
                 return;
             }
 
             // Despawn card
             card.Dispose();
-            Cards.Remove(card);
+
+            if (Cards.Contains(card))
+            {
+                Cards.Remove(card);
+            }
+        }
+
+        public IList<CardPresenter> MakeCopies(IList<Card> cards)
+        {
+            _tempCopies.Clear();
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                _tempCopies.Add(MakeCopy(cards[i]));
+            }
+
+            return _tempCopies;
+        }
+
+        public CardPresenter MakeCopy(Card card)
+        {
+            CardPresenter copy = Spawn(card.Suit, card.Type);
+            copy.transform.position = card.Position.Value;
+            copy.Flip(card.IsFaceUp.Value);
+
+            copy.Card.IsFaceUp.Value = card.IsFaceUp.Value;
+            copy.Card.Position.Value = card.Position.Value;
+            copy.Card.Order.Value = card.Order.Value;
+            copy.Card.Alpha.Value = 0.5f;
+
+            return copy;
         }
     }
 }

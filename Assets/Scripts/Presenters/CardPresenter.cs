@@ -22,9 +22,9 @@ namespace Solitaire.Presenters
         [SerializeField] SpriteRenderer _suit1;
         [SerializeField] SpriteRenderer _suit2;
 
+        [Inject] Game _game;
         [Inject] Card _card;
         [Inject] Card.Config _config;
-        [Inject] Game _game;
         [Inject] DragAndDropHandler _dndHandler;
 
         Tweener _tweenScale;
@@ -42,6 +42,9 @@ namespace Solitaire.Presenters
         void Start()
         {
             _collider = GetComponent<BoxCollider2D>();
+
+            // Handle alpha change
+            _card.Alpha.Subscribe(alpha => UpdateAlpha(alpha)).AddTo(this);
 
             // Handle order change 
             _card.Order.Subscribe(order => UpdateOrder(order)).AddTo(this);
@@ -64,11 +67,7 @@ namespace Solitaire.Presenters
             _tweenScale = transform.DOScaleX(0f, _config.AnimationDuration / 2f)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetEase(Ease.Linear)
-                .OnStepComplete(() =>
-                {
-                    _back.gameObject.SetActive(!isFaceUp);
-                    _front.gameObject.SetActive(isFaceUp);
-                })
+                .OnStepComplete(() => Flip(isFaceUp))
                 .OnComplete(() => transform.localScale = Vector3.one);
         }
 
@@ -88,7 +87,7 @@ namespace Solitaire.Presenters
                     .SetEase(Ease.OutQuad)
                     .OnStart(() =>
                     {
-                        _card.OrderToRestore = _card.Order.Value;
+                        _card.OrderToRestore = _card.IsInPile ? _card.Pile.Cards.IndexOf(_card) : _card.Order.Value;
                         _card.Order.Value = _animOrder + _card.OrderToRestore;
                     })
                     .OnComplete(() => _card.Order.Value = _card.OrderToRestore);
@@ -105,6 +104,29 @@ namespace Solitaire.Presenters
             _suit1.sortingOrder = sortingOrder + 1;
             _suit2.sortingOrder = sortingOrder + 1;
         }
+        
+        void UpdateAlpha(float alpha)
+        {
+            Color color = _back.color;
+            color.a = alpha;
+            _back.color = color;
+
+            color = _front.color;
+            color.a = alpha;
+            _front.color = color;
+
+            color = _type.color;
+            color.a = alpha;
+            _type.color = color;
+
+            color = _suit1.color;
+            color.a = alpha;
+            _suit1.color = color;
+
+            color = _suit2.color;
+            color.a = alpha;
+            _suit2.color = color;
+        }
 
         void Initialize()
         {
@@ -120,6 +142,12 @@ namespace Solitaire.Presenters
             Sprite spriteType = _config.TypeSprites[(int)_card.Type];
             _type.sprite = spriteType;
             _type.color = color;
+        }
+
+        public void Flip(bool isFaceUp)
+        {
+            _back.gameObject.SetActive(!isFaceUp);
+            _front.gameObject.SetActive(isFaceUp);
         }
 
         #region IEventSystemHandlers
@@ -178,8 +206,7 @@ namespace Solitaire.Presenters
             }
             else if (_card.IsMoveable && (_lastClick + _doubleClickInterval) > Time.time)
             {
-                Pile pile = _game.FindValidPileForCard(_card);
-                _game.MoveCard(_card, pile);
+                _game.MoveCard(_card, null);
             }
 
             _lastClick = Time.time;

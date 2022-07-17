@@ -124,7 +124,7 @@ namespace Solitaire.Models
                 card.Pile.RemoveCard(card);
             }
 
-            card.SetPile(this);
+            card.Pile = this;
             Cards.Add(card);
 
             card.Order.Value = Cards.Count - 1;
@@ -152,7 +152,16 @@ namespace Solitaire.Models
 
             if (Cards.Remove(card))
             {
-                card.SetPile(null);
+                card.Pile = null;
+            }
+
+            if (Arrangement == CardArrangement.TopThree && Cards.Count > 2)
+            {
+                // Update the position of the last two cards
+                for (int i = Cards.Count - 1; i >= Cards.Count - 2; i--)
+                {
+                    UpdateCardPosition(Cards[i]);
+                }
             }
         }
 
@@ -211,52 +220,54 @@ namespace Solitaire.Models
             }
         }
 
-        private void UpdateCardPosition(Card card)
+        public Vector3 CalculateCardPosition(int index, int count, Card prevCard)
         {
-            int index = Cards.IndexOf(card);
-
             switch (Arrangement)
             {
                 case CardArrangement.Stack:
-                    card.Position.Value = Position +
-                        _offsetDepth * (index + 1) * Vector3.back;
-                    break;
+                    return Position + _offsetDepth * (index + 1) * Vector3.back;
 
                 case CardArrangement.Waterfall:
                     float verticalOffset = 0f;
 
-                    if (index > 0)
+                    if (prevCard != null)
                     {
-                        Card prevCard = Cards[index - 1];
                         verticalOffset = Mathf.Abs(prevCard.Position.Value.y - Position.y) +
                             (prevCard.IsFaceUp.Value ? _offsetVertFaceUp : _offsetVertFaceDown);
                     }
 
-                    card.Position.Value = Position +
-                        _offsetDepth * (index + 1) * Vector3.back +
-                        verticalOffset * Vector3.down;
-                    break;
+                    return Position + _offsetDepth * (index + 1) * Vector3.back + verticalOffset * Vector3.down;
 
                 case CardArrangement.TopThree:
                     float horizontalOffset;
 
-                    if (Cards.Count > 3)
+                    if (count > 3)
                     {
-                        horizontalOffset = (3 - Mathf.Min(3, Cards.Count - index)) * _offsetHorizontal;
+                        horizontalOffset = (3 - Mathf.Min(3, count - index)) * _offsetHorizontal;
                     }
                     else
                     {
                         horizontalOffset = index * _offsetHorizontal;
                     }
 
-                    card.Position.Value = Position +
-                        _offsetDepth * (index + 1) * Vector3.back +
-                        horizontalOffset * Vector3.right;
-                    break;
+                    return Position + _offsetDepth * (index + 1) * Vector3.back + horizontalOffset * Vector3.right;
 
                 default:
-                    break;
+                    return Vector3.zero;
             }
+        }
+
+        private void UpdateCardPosition(Card card)
+        {
+            int count = Cards.Count;
+            int index = Cards.IndexOf(card);
+            Card prevCard = index > 0 ? Cards[index - 1] : null;
+            card.Position.Value = CalculateCardPosition(index, count, prevCard);
+        }
+
+        public override string ToString()
+        {
+            return $"{Type}";
         }
     }
 }

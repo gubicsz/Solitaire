@@ -42,16 +42,18 @@ namespace Solitaire.Models
 
         public Suits Suit { get; private set; }
         public Types Type { get; private set; }
-        public Pile Pile { get; private set; }
         public BoolReactiveProperty IsFaceUp { get; private set; } = new BoolReactiveProperty();
         public Vector3ReactiveProperty Position { get; private set; } = new Vector3ReactiveProperty();
         public IntReactiveProperty Order { get; private set; } = new IntReactiveProperty();
+        public FloatReactiveProperty Alpha { get; private set; } = new FloatReactiveProperty(1);
+        public Pile Pile { get; set; }
         public Vector3 DragOrigin { get; set; }
         public Vector3 DragOffset { get; set; }
         public int OrderToRestore { get; set; }
         public bool IsDragged { get; set; }
 
         public bool IsInPile => Pile != null;
+        public bool IsOnBottom => Pile.BottomCard() == this;
         public bool IsOnTop => Pile.TopCard() == this;
         public bool IsMoveable => IsInPile && ((Pile.IsWaste && IsOnTop && IsFaceUp.Value) || (!Pile.IsWaste && IsFaceUp.Value));
         public bool IsDrawable => IsInPile && Pile.IsStock && IsOnTop && !IsFaceUp.Value;
@@ -68,6 +70,7 @@ namespace Solitaire.Models
             IsFaceUp.Value = false;
             Position.Value = position;
             Order.Value = 0;
+            Alpha.Value = 1f;
             DragOrigin = Vector3.zero;
             DragOffset = Vector3.zero;
             OrderToRestore = 0;
@@ -96,9 +99,9 @@ namespace Solitaire.Models
             IsFaceUp.Value = !IsFaceUp.Value;
         }
 
-        public void SetPile(Pile pile)
+        public override string ToString()
         {
-            Pile = pile;
+            return $"{Suit} {Type}";
         }
     }
 }

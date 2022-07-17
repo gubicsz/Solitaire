@@ -2,6 +2,7 @@ using Solitaire.Helpers;
 using Solitaire.Services;
 using System;
 using UniRx;
+using Cysharp.Threading.Tasks;
 
 namespace Solitaire.Models
 {
@@ -10,9 +11,9 @@ namespace Solitaire.Models
         public ReactiveCommand HomeCommand { get; private set; }
         public ReactiveCommand PauseCommand { get; private set; }
         public ReactiveCommand UndoCommand { get; private set; }
-        public ReactiveCommand HintCommand { get; private set; }
+        public AsyncReactiveCommand HintCommand { get; private set; }
 
-        public GameControls(GameState gameState, CommandService commandService, MovesService movesService)
+        public GameControls(Game game, GameState gameState, CommandService commandService, MovesService movesService)
         {
             IObservable<bool> isPlayingSource = gameState.State.Select(s => s == Game.State.Playing);
 
@@ -28,9 +29,9 @@ namespace Solitaire.Models
                 commandService.UndoCommand();
                 movesService.Increment();
             }).AddTo(this);
-
-            HintCommand = new ReactiveCommand(isPlayingSource);
-            HintCommand.Subscribe(_ => UnityEngine.Debug.Log("HINT")).AddTo(this);// todo
+            
+            HintCommand = new AsyncReactiveCommand(isPlayingSource);
+            HintCommand.Subscribe(_ => game.TryShowHintAsync().ToObservable().AsUnitObservable()).AddTo(this);
         }
     }
 }

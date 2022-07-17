@@ -24,6 +24,7 @@ namespace Solitaire.Installers
             Container.BindInterfacesAndSelfTo<DragAndDropHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<MovesService>().AsSingle();
             Container.BindInterfacesAndSelfTo<PointsService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HintService>().AsSingle();
             Container.BindInterfacesAndSelfTo<OrientationService>().AsSingle();
 
             // Game

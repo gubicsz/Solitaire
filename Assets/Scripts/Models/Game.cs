@@ -36,18 +36,21 @@ namespace Solitaire.Models
         public ReactiveCommand NewMatchCommand { get; private set; }
         public ReactiveCommand ContinueCommand { get; private set; }
 
+        public Pile PileStock { get; private set; }
+        public Pile PileWaste { get; private set; }
+        public IList<Pile> PileFoundations { get; private set; }
+        public IList<Pile> PileTableaus { get; private set; }
+        public IList<Card> Cards { get; private set; }
+
         [Inject] CardSpawner _cardSpawner;
         [Inject] CommandService _commandService;
         [Inject] MovesService _movesService;
         [Inject] PointsService _pointsService;
+        [Inject] HintService _hintService;
         [Inject] Game.Config _gameConfig;
+        [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
 
-        Pile _pileStock;
-        Pile _pileWaste;
-        IList<Pile> _pileFoundations;
-        IList<Pile> _pileTableaus;
-        IList<Card> _cards;
         bool _hasPlayed;
         bool _hasWon;
 
@@ -67,25 +70,25 @@ namespace Solitaire.Models
             IList<Pile> pileFoundations, IList<Pile> pileTableaus)
         {
             // Set references
-            _pileStock = pileStock;
-            _pileWaste = pileWaste;
-            _pileFoundations = pileFoundations;
-            _pileTableaus = pileTableaus;
+            PileStock = pileStock;
+            PileWaste = pileWaste;
+            PileFoundations = pileFoundations;
+            PileTableaus = pileTableaus;
 
             // Spawn cards
             _cardSpawner.SpawnAll();
-            _cards = _cardSpawner.Cards.Select(c => c.Card).ToList();
+            Cards = _cardSpawner.Cards.Select(c => c.Card).ToList();
         }
 
         public void RefillStock()
         {
-            if (_pileStock.HasCards || !_pileWaste.HasCards)
+            if (PileStock.HasCards || !PileWaste.HasCards)
             {
                 return;
             }
 
             // Refill stock pile from waste pile
-            var command = new RefillStockCommand(_pileStock, _pileWaste, _pointsService, _gameConfig);
+            var command = new RefillStockCommand(PileStock, PileWaste, _pointsService, _gameConfig);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -93,7 +96,19 @@ namespace Solitaire.Models
 
         public void MoveCard(Card card, Pile pile)
         {
-            if (card == null || pile == null)
+            if (card == null)
+            {
+                return;
+            }
+
+            // Try to find valid move for the card
+            if (pile == null)
+            {
+                pile = _hintService.FindValidMove(card);
+            }
+
+            // Couldn't find move
+            if (pile == null)
             {
                 return;
             }
@@ -113,7 +128,7 @@ namespace Solitaire.Models
             }
 
             // Draw card from stock
-            var command = new DrawCardCommand(_pileStock, _pileWaste, card);
+            var command = new DrawCardCommand(PileStock, PileWaste, card);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -122,9 +137,9 @@ namespace Solitaire.Models
         public void DetectWinCondition()
         {
             // All cards in the tableau piles should be revelead
-            for (int i = 0; i < _pileTableaus.Count; i++)
+            for (int i = 0; i < PileTableaus.Count; i++)
             {
-                Pile pileTableau = _pileTableaus[i];
+                Pile pileTableau = PileTableaus[i];
 
                 for (int j = 0; j < pileTableau.Cards.Count; j++)
                 {
@@ -135,8 +150,8 @@ namespace Solitaire.Models
                 }
             }
 
-            // The stock and waste should be empty
-            if (_pileStock.HasCards || _pileWaste.HasCards)
+            // The stock and waste piles should be empty
+            if (PileStock.HasCards || PileWaste.HasCards)
             {
                 return;
             }
@@ -144,60 +159,68 @@ namespace Solitaire.Models
             WinAsync().Forget();
         }
 
-        public Pile FindValidPileForCard(Card card)
+        public async UniTask TryShowHintAsync()
         {
-            if (card == null)
+            // Try to get hint
+            Hint hint = _hintService.GetHint();
+
+            if (hint == null)
             {
-                return null;
+                return;
             }
 
-            // Check foundations
-            Pile pileTarget = CheckPilesForMove(_pileFoundations, card);
+            // Make copies of the original card and all cards above it
+            var pile = hint.Pile;
+            var cardsToCopy = hint.Card.Pile.SplitAt(hint.Card);
+            var copies = _cardSpawner.MakeCopies(cardsToCopy);
 
-            // Check tableaus
-            if (pileTarget == null)
+            // Initialize copies without adding them to the pile
+            for (int i = 0; i < copies.Count; i++)
             {
-                pileTarget = CheckPilesForMove(_pileTableaus, card);
+                // Calculate order
+                var copy = copies[i];
+                int index = pile.Cards.Count + i;
+                copy.Card.Order.Value = index;
+
+                // Calculate position
+                int count = pile.Cards.Count + 1 + i;
+                Card prevCard = i > 0 ? copies[i - 1].Card : (pile.HasCards ? pile.Cards[index - 1] : null);
+                copy.Card.Position.Value = pile.CalculateCardPosition(index, count, prevCard);
             }
 
-            return pileTarget;
-        }
+            // Wait until the animation completes
+            int delayMs = (int)(_cardConfig.AnimationDuration * 1000);
+            await UniTask.Delay(delayMs);
 
-        private Pile CheckPilesForMove(IList<Pile> piles, Card card)
-        {
-            for (int i = 0; i < piles.Count; i++)
+            // Despawn copies
+            for (int i = 0; i < copies.Count; i++)
             {
-                Pile pile = piles[i];
-
-                if (pile.CanAddCard(card))
-                {
-                    return pile;
-                }
+                _cardSpawner.Despawn(copies[i]);
             }
 
-            return null;
+            await UniTask.Delay(delayMs);
         }
 
         private void Reset()
         {
             // Reset piles
-            _pileStock.Reset();
-            _pileWaste.Reset();
+            PileStock.Reset();
+            PileWaste.Reset();
 
-            for (int i = 0; i < _pileFoundations.Count; i++)
+            for (int i = 0; i < PileFoundations.Count; i++)
             {
-                _pileFoundations[i].Reset();
+                PileFoundations[i].Reset();
             }
 
-            for (int i = 0; i < _pileTableaus.Count; i++)
+            for (int i = 0; i < PileTableaus.Count; i++)
             {
-                _pileTableaus[i].Reset();
+                PileTableaus[i].Reset();
             }
 
             // Reset cards
-            for (int i = 0; i < _cards.Count; i++)
+            for (int i = 0; i < Cards.Count; i++)
             {
-                _cards[i].Reset(_pileStock.Position);
+                Cards[i].Reset(PileStock.Position);
             }
 
             // Reset services
@@ -211,7 +234,7 @@ namespace Solitaire.Models
 
         private void ShuffleCards()
         {
-            _cards = _cards.OrderBy(a => Guid.NewGuid()).ToList();
+            Cards = Cards.OrderBy(a => Guid.NewGuid()).ToList();
         }
 
         private async UniTask DealAsync()
@@ -221,16 +244,16 @@ namespace Solitaire.Models
 
             // Add cards to the stock pile
             await UniTask.Delay(300);
-            _pileStock.AddCards(_cards);
+            PileStock.AddCards(Cards);
             await UniTask.Delay(300);
 
             // Deal cards to the Tableau piles
-            for (int i = 0; i < _pileTableaus.Count; i++)
+            for (int i = 0; i < PileTableaus.Count; i++)
             {
                 for (int j = 0; j < i + 1; j++)
                 {
-                    Card topCard = _pileStock.TopCard();
-                    _pileTableaus[i].AddCard(topCard);
+                    Card topCard = PileStock.TopCard();
+                    PileTableaus[i].AddCard(topCard);
 
                     if (j == i)
                     {
@@ -258,9 +281,9 @@ namespace Solitaire.Models
                 cardsInTableaus = 0;
 
                 // Check each tableau pile
-                for (int i = 0; i < _pileTableaus.Count; i++)
+                for (int i = 0; i < PileTableaus.Count; i++)
                 {
-                    Pile pileTableau = _pileTableaus[i];
+                    Pile pileTableau = PileTableaus[i];
                     Card topCard = pileTableau.TopCard();
                     cardsInTableaus += pileTableau.Cards.Count;
 
@@ -271,7 +294,7 @@ namespace Solitaire.Models
                     }
 
                     // Skip card that cannot be moved to a foundation pile
-                    Pile pileFoundation = CheckPilesForMove(_pileFoundations, topCard);
+                    Pile pileFoundation = _hintService.CheckPilesForMove(PileFoundations, topCard);
 
                     if (pileFoundation == null)
                     {

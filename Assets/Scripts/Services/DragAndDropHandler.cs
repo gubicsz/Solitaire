@@ -28,7 +28,7 @@ namespace Solitaire.Services
                 Card card = _draggedCards[i];
                 card.DragOrigin = card.Position.Value;
                 card.DragOffset = card.DragOrigin - dragPos;
-                card.OrderToRestore = card.Order.Value;
+                card.OrderToRestore = card.Pile.Cards.IndexOf(card);
                 card.Order.Value = _dragOrder + i;
                 card.IsDragged = true;
             }
