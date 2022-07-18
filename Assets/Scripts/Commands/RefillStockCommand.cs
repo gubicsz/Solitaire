@@ -1,26 +1,20 @@
 using Solitaire.Models;
 using Solitaire.Services;
+using System;
+using Zenject;
 
 namespace Solitaire.Commands
 {
-    public class RefillStockCommand : ICommand
+    public class RefillStockCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool>
     {
-        readonly Pile _pileStock;
-        readonly Pile _pileWaste;
-        readonly PointsService _pointsService;
-        readonly AudioService _audioService;
-        readonly Game.Config _gameConfig;
+        [Inject] PointsService _pointsService;
+        [Inject] AudioService _audioService;
+        [Inject] Game.Config _gameConfig;
 
+        Pile _pileStock;
+        Pile _pileWaste;
+        IMemoryPool _pool;
         int _points;
-
-        public RefillStockCommand(Pile pileStock, Pile pileWaste, PointsService pointsService, AudioService audioService, Game.Config gameConfig)
-        {
-            _pileStock = pileStock;
-            _pileWaste = pileWaste;
-            _pointsService = pointsService;
-            _audioService = audioService;
-            _gameConfig = gameConfig;
-        }
 
         public void Execute()
         {
@@ -51,6 +45,30 @@ namespace Solitaire.Commands
             _pointsService.Set(_points);
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
+        }
+
+        public void Dispose()
+        {
+            _pool.Despawn(this);
+        }
+
+        public void OnDespawned()
+        {
+            _pileStock = null;
+            _pileWaste = null;
+            _pool = null;
+        }
+
+        public void OnSpawned(Pile pileStock, Pile pileWaste, IMemoryPool pool)
+        {
+            _pileStock = pileStock;
+            _pileWaste = pileWaste;
+            _pool = pool;
+            _points = 0;
+        }
+
+        public class Factory : PlaceholderFactory<Pile, Pile, RefillStockCommand>
+        {
         }
     }
 }

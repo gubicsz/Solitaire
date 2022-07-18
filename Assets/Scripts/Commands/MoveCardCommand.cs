@@ -1,28 +1,22 @@
 using Solitaire.Models;
 using Solitaire.Services;
+using System;
+using Zenject;
 
 namespace Solitaire.Commands
 {
-    public class MoveCardCommand : ICommand
+    public class MoveCardCommand : ICommand, IDisposable, IPoolable<Card, Pile, Pile, IMemoryPool>
     {
-        readonly Card _card;
-        readonly Pile _pileTarget;
-        readonly Pile _pileSource;
-        readonly PointsService _pointsService;
-        readonly AudioService _audioService;
-        readonly Game.Config _gameConfig;
+        [Inject] AudioService _audioService;
+        [Inject] PointsService _pointsService;
+        [Inject] Game.Config _gameConfig;
+
+        Card _card;
+        Pile _pileSource;
+        Pile _pileTarget;
+        IMemoryPool _pool;
 
         private bool _wasTopCardFlipped;
-
-        public MoveCardCommand(Card card, Pile pile, PointsService pointsService, AudioService audioService, Game.Config gameConfig)
-        {
-            _card = card;
-            _pileTarget = pile;
-            _pileSource = card.Pile;
-            _pointsService = pointsService;
-            _audioService = audioService;
-            _gameConfig = gameConfig;
-        }
 
         public void Execute()
         {
@@ -121,6 +115,32 @@ namespace Solitaire.Commands
                 _pileTarget.RemoveCards(cards);
                 _pileSource.AddCards(cards);
             }
+        }
+
+        public void Dispose()
+        {
+            _pool.Despawn(this);
+        }
+
+        public void OnDespawned()
+        {
+            _card = null;
+            _pileSource = null;
+            _pileTarget = null;
+            _pool = null;
+        }
+
+        public void OnSpawned(Card card, Pile pileSource, Pile pileTarget, IMemoryPool pool)
+        {
+            _card = card;
+            _pileSource = pileSource;
+            _pileTarget = pileTarget;
+            _pool = pool;
+            _wasTopCardFlipped = false;
+        }
+
+        public class Factory : PlaceholderFactory<Card, Pile, Pile, MoveCardCommand>
+        {
         }
     }
 }

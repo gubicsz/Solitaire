@@ -51,6 +51,9 @@ namespace Solitaire.Models
         [Inject] Game.Config _gameConfig;
         [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
+        [Inject] DrawCardCommand.Factory _drawCardCommandFactory;
+        [Inject] MoveCardCommand.Factory _moveCardCommandFactory;
+        [Inject] RefillStockCommand.Factory _refillStockCommandFactory;
 
         BoolReactiveProperty _hasStarted = new BoolReactiveProperty();
 
@@ -89,7 +92,7 @@ namespace Solitaire.Models
             }
 
             // Refill stock pile from waste pile
-            var command = new RefillStockCommand(PileStock, PileWaste, _pointsService, _audioService, _gameConfig);
+            var command = _refillStockCommandFactory.Create(PileStock, PileWaste);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -116,7 +119,7 @@ namespace Solitaire.Models
             }
 
             // Move card to pile
-            var command = new MoveCardCommand(card, pile, _pointsService, _audioService, _gameConfig);
+            var command = _moveCardCommandFactory.Create(card, card.Pile, pile);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -129,8 +132,9 @@ namespace Solitaire.Models
                 return;
             }
 
+
             // Draw card from stock
-            var command = new DrawCardCommand(card, PileStock, PileWaste, _audioService);
+            var command = _drawCardCommandFactory.Create(card, PileStock, PileWaste);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();

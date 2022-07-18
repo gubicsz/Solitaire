@@ -1,22 +1,18 @@
 using Solitaire.Models;
 using Solitaire.Services;
+using System;
+using Zenject;
 
 namespace Solitaire.Commands
 {
-    public class DrawCardCommand : ICommand
+    public class DrawCardCommand : ICommand, IDisposable, IPoolable<Card, Pile, Pile, IMemoryPool> 
     {
-        readonly Card _card;
-        readonly Pile _pileStock;
-        readonly Pile _pileWaste;
-        readonly AudioService _audioService;
+        [Inject] AudioService _audioService;
 
-        public DrawCardCommand(Card card, Pile pileStock, Pile pileWaste, AudioService audioService)
-        {
-            _card = card;
-            _pileStock = pileStock;
-            _pileWaste = pileWaste;
-            _audioService = audioService;
-        }
+        Card _card;
+        Pile _pileStock;
+        Pile _pileWaste;
+        IMemoryPool _pool;
 
         public void Execute()
         {
@@ -32,6 +28,31 @@ namespace Solitaire.Commands
             _pileStock.AddCard(_card);
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
+        }
+
+        public void Dispose()
+        {
+            _pool.Despawn(this);
+        }
+
+        public void OnDespawned()
+        {
+            _card = null;
+            _pileStock = null;
+            _pileWaste = null;
+            _pool = null;
+        }
+
+        public void OnSpawned(Card card, Pile pileStock, Pile pileWaste, IMemoryPool pool)
+        {
+            _card = card;
+            _pileStock = pileStock;
+            _pileWaste = pileWaste;
+            _pool = pool;
+        }
+
+        public class Factory : PlaceholderFactory<Card, Pile, Pile, DrawCardCommand>
+        {
         }
     }
 }

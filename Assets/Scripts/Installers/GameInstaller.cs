@@ -1,3 +1,5 @@
+using DG.Tweening;
+using Solitaire.Commands;
 using Solitaire.Models;
 using Solitaire.Presenters;
 using Solitaire.Services;
@@ -15,6 +17,7 @@ namespace Solitaire.Installers
             // Initialize
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            DOTween.Init();
         }
 
         public override void InstallBindings()
@@ -40,8 +43,18 @@ namespace Solitaire.Installers
             // Cards
             Container.Bind<Card>().AsTransient();
             Container.BindInterfacesAndSelfTo<CardSpawner>().AsSingle();
-            Container.BindFactory<Card.Suits, Card.Types, CardPresenter, CardPresenter.Factory>().FromMonoPoolableMemoryPool(
-                x => x.WithInitialSize(52).FromComponentInNewPrefab(_cardPrefab).UnderTransformGroup("CardPool"));
+            Container.BindFactory<Card.Suits, Card.Types, CardPresenter, CardPresenter.Factory>()
+                .FromMonoPoolableMemoryPool(x => x.WithInitialSize(52)
+                .FromComponentInNewPrefab(_cardPrefab)
+                .UnderTransformGroup("CardPool"));
+
+            // Commands
+            Container.BindFactory<Card, Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
+                .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
+            Container.BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
+                .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
+            Container.BindFactory<Pile, Pile, RefillStockCommand, RefillStockCommand.Factory>()
+                .FromPoolableMemoryPool(x => x.WithInitialSize(4).ExpandByDoubling());
         }
     }
 }
