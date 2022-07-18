@@ -48,7 +48,6 @@ namespace Solitaire.Models
         [Inject] PointsService _pointsService;
         [Inject] HintService _hintService;
         [Inject] AudioService _audioService;
-        [Inject] Game.Config _gameConfig;
         [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
         [Inject] DrawCardCommand.Factory _drawCardCommandFactory;
@@ -125,16 +124,10 @@ namespace Solitaire.Models
             _movesService.Increment();
         }
 
-        public void DrawCard(Card card)
+        public void DrawCard()
         {
-            if (card == null)
-            {
-                return;
-            }
-
-
-            // Draw card from stock
-            var command = _drawCardCommandFactory.Create(card, PileStock, PileWaste);
+            // Draw card(s) from stock
+            var command = _drawCardCommandFactory.Create(PileStock, PileWaste);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();

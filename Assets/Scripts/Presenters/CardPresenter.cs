@@ -207,7 +207,7 @@ namespace Solitaire.Presenters
 
             if (_card.IsDrawable)
             {
-                _game.DrawCard(_card);
+                _game.DrawCard();
             }
             else if ((_lastClick + _doubleClickInterval) > Time.time)
             {

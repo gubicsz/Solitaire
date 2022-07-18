@@ -1,31 +1,51 @@
 using Solitaire.Models;
 using Solitaire.Services;
 using System;
+using System.Collections.Generic;
 using Zenject;
 
 namespace Solitaire.Commands
 {
-    public class DrawCardCommand : ICommand, IDisposable, IPoolable<Card, Pile, Pile, IMemoryPool> 
+    public class DrawCardCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool> 
     {
         [Inject] AudioService _audioService;
+        [Inject] Options _options;
 
-        Card _card;
         Pile _pileStock;
         Pile _pileWaste;
         IMemoryPool _pool;
+        List<Card> _cards = new List<Card>(3);
 
         public void Execute()
         {
-            _card.Flip();
-            _pileWaste.AddCard(_card);
+            int count = _options.DrawThree.Value ? 3 : 1;
+
+            for (int i = 0; i < count; i++)
+            {
+                Card card = _pileStock.TopCard();
+
+                if (card == null)
+                {
+                    break;
+                }
+
+                card.Flip();
+                _pileWaste.AddCard(card);
+                _cards.Add(card);
+            }
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
 
         public void Undo()
         {
-            _card.Flip();
-            _pileStock.AddCard(_card);
+            for (int i = _cards.Count - 1; i >= 0; i--)
+            {
+                Card card = _cards[i];
+                card.Flip();
+                _pileStock.AddCard(card);
+                _cards.RemoveAt(i);
+            }
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
@@ -37,21 +57,20 @@ namespace Solitaire.Commands
 
         public void OnDespawned()
         {
-            _card = null;
             _pileStock = null;
             _pileWaste = null;
             _pool = null;
         }
 
-        public void OnSpawned(Card card, Pile pileStock, Pile pileWaste, IMemoryPool pool)
+        public void OnSpawned(Pile pileStock, Pile pileWaste, IMemoryPool pool)
         {
-            _card = card;
             _pileStock = pileStock;
             _pileWaste = pileWaste;
             _pool = pool;
+            _cards.Clear();
         }
 
-        public class Factory : PlaceholderFactory<Card, Pile, Pile, DrawCardCommand>
+        public class Factory : PlaceholderFactory<Pile, Pile, DrawCardCommand>
         {
         }
     }

@@ -10,6 +10,7 @@ namespace Solitaire.Commands
         [Inject] PointsService _pointsService;
         [Inject] AudioService _audioService;
         [Inject] Game.Config _gameConfig;
+        [Inject] Options _options;
 
         Pile _pileStock;
         Pile _pileWaste;
@@ -26,8 +27,11 @@ namespace Solitaire.Commands
                 _pileStock.AddCard(topCard);
             }
 
-            _points = _pointsService.Points.Value;
-            _pointsService.Add(_gameConfig.PointsRecycleWaste);
+            if (!_options.DrawThree.Value)
+            {
+                _points = _pointsService.Points.Value;
+                _pointsService.Add(_gameConfig.PointsRecycleWaste);
+            }
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
@@ -42,7 +46,10 @@ namespace Solitaire.Commands
                 _pileWaste.AddCard(topCard);
             }
 
-            _pointsService.Set(_points);
+            if (!_options.DrawThree.Value)
+            {
+                _pointsService.Set(_points);
+            }
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }

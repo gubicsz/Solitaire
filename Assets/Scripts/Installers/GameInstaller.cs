@@ -36,6 +36,7 @@ namespace Solitaire.Installers
             Container.Bind<GameState>().AsSingle();
             Container.Bind<GameControls>().AsSingle();
             Container.Bind<OrientationState>().AsSingle();
+            Container.Bind<Options>().AsSingle();
 
             // Piles
             Container.Bind<Pile>().AsTransient();
@@ -49,7 +50,7 @@ namespace Solitaire.Installers
                 .UnderTransformGroup("CardPool"));
 
             // Commands
-            Container.BindFactory<Card, Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
+            Container.BindFactory<Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
             Container.BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
