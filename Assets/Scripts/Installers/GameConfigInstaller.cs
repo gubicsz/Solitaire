@@ -9,12 +9,14 @@ namespace Solitaire.Installers
     {
         [SerializeField] Game.Config _game;
         [SerializeField] Card.Config _card;
+        [SerializeField] Audio.Config _audio;
 
         public override void InstallBindings()
         {
             // Configs
             Container.BindInstances(_game);
             Container.BindInstances(_card);
+            Container.BindInstances(_audio);
         }
     }
 }

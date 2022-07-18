@@ -1349,7 +1349,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonHint
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8303830550623666971, guid: c85ecb15e1e4c0c47be1c79bd52675cf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c85ecb15e1e4c0c47be1c79bd52675cf, type: 3}
 --- !u!224 &332964599 stripped
 RectTransform:
@@ -1455,7 +1456,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonUndo
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8303830550623666971, guid: c85ecb15e1e4c0c47be1c79bd52675cf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c85ecb15e1e4c0c47be1c79bd52675cf, type: 3}
 --- !u!224 &366767735 stripped
 RectTransform:

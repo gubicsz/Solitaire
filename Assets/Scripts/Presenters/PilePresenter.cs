@@ -18,6 +18,7 @@ namespace Solitaire.Presenters
         [Inject] Game _game;
         [Inject] DragAndDropHandler _dndHandler;
         [Inject] OrientationState _orientation;
+        [Inject] AudioService _audioService;
 
         public Pile Pile => _pile;
 
@@ -45,11 +46,15 @@ namespace Solitaire.Presenters
                 _dndHandler.Drop();
                 _game.MoveCard(cardPresenter.Card, _pile);
             }
+            else
+            {
+                _game.IndicateError();
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_pile.IsStock && eventData?.clickCount == 1)
+            if (eventData?.clickCount == 1 && _pile.IsStock)
             {
                 _game.RefillStock();
             }

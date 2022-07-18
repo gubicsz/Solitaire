@@ -9,16 +9,18 @@ namespace Solitaire.Commands
         readonly Pile _pileTarget;
         readonly Pile _pileSource;
         readonly PointsService _pointsService;
+        readonly AudioService _audioService;
         readonly Game.Config _gameConfig;
 
         private bool _wasTopCardFlipped;
 
-        public MoveCardCommand(Card card, Pile pile, PointsService pointsService, Game.Config gameConfig)
+        public MoveCardCommand(Card card, Pile pile, PointsService pointsService, AudioService audioService, Game.Config gameConfig)
         {
             _card = card;
             _pileTarget = pile;
             _pileSource = card.Pile;
             _pointsService = pointsService;
+            _audioService = audioService;
             _gameConfig = gameConfig;
         }
 
@@ -57,6 +59,8 @@ namespace Solitaire.Commands
             {
                 _pointsService.Add(_gameConfig.PointsFoundationToTableau);
             }
+
+            _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
 
             // Reveal card below if needed
             Card cardBelow = _pileSource.TopCard();
@@ -102,6 +106,8 @@ namespace Solitaire.Commands
             {
                 _pointsService.Add(-_gameConfig.PointsFoundationToTableau);
             }
+
+            _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
 
             if (_pileTarget.TopCard() == _card)
             {

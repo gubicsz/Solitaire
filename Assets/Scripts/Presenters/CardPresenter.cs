@@ -26,6 +26,7 @@ namespace Solitaire.Presenters
         [Inject] Card _card;
         [Inject] Card.Config _config;
         [Inject] DragAndDropHandler _dndHandler;
+        [Inject] AudioService _audioService;
 
         Tweener _tweenScale;
         Tweener _tweenMove;
@@ -191,6 +192,10 @@ namespace Solitaire.Presenters
                 _dndHandler.Drop();
                 _game.MoveCard(cardPresenter.Card, _card.Pile);
             }
+            else
+            {
+                _game.IndicateError();
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -204,9 +209,16 @@ namespace Solitaire.Presenters
             {
                 _game.DrawCard(_card);
             }
-            else if (_card.IsMoveable && (_lastClick + _doubleClickInterval) > Time.time)
+            else if ((_lastClick + _doubleClickInterval) > Time.time)
             {
-                _game.MoveCard(_card, null);
+                if (_card.IsMoveable)
+                {
+                    _game.MoveCard(_card, null);
+                }
+                else
+                {
+                    _game.IndicateError();
+                }
             }
 
             _lastClick = Time.time;

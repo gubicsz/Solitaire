@@ -8,15 +8,17 @@ namespace Solitaire.Commands
         readonly Pile _pileStock;
         readonly Pile _pileWaste;
         readonly PointsService _pointsService;
+        readonly AudioService _audioService;
         readonly Game.Config _gameConfig;
 
         int _points;
 
-        public RefillStockCommand(Pile pileStock, Pile pileWaste, PointsService pointsService, Game.Config gameConfig)
+        public RefillStockCommand(Pile pileStock, Pile pileWaste, PointsService pointsService, AudioService audioService, Game.Config gameConfig)
         {
             _pileStock = pileStock;
             _pileWaste = pileWaste;
             _pointsService = pointsService;
+            _audioService = audioService;
             _gameConfig = gameConfig;
         }
 
@@ -32,6 +34,8 @@ namespace Solitaire.Commands
 
             _points = _pointsService.Points.Value;
             _pointsService.Add(_gameConfig.PointsRecycleWaste);
+
+            _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
 
         public void Undo()
@@ -45,6 +49,8 @@ namespace Solitaire.Commands
             }
 
             _pointsService.Set(_points);
+
+            _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
     }
 }

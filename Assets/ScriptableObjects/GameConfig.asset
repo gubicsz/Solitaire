@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eedfa04f22f95d8488c856d3d02b46d3, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
+  _game:
+    PointsWasteToTableau: 5
+    PointsWasteToFoundation: 10
+    PointsTableauToFoundation: 10
+    PointsTurnOverTableauCard: 5
+    PointsFoundationToTableau: -15
+    PointsRecycleWaste: -100
   _card:
     AnimationDuration: 0.25
     Colors:
@@ -38,3 +45,13 @@ MonoBehaviour:
     - {fileID: 21300000, guid: be231f46753cb894894e5ad14a81ce10, type: 3}
     - {fileID: 21300000, guid: 1303b1693f3257d45b7ce407bc1fdec7, type: 3}
     - {fileID: 21300000, guid: 38de620951d510c4dbfd223e1e11d2d7, type: 3}
+  _audio:
+    MusicVolume: 0.2
+    AudioClips:
+    - {fileID: 8300000, guid: 11335588942bbd5449bd5e612908f09c, type: 3}
+    - {fileID: 8300000, guid: d372c3c1265b3428b93b791dd44035a1, type: 3}
+    - {fileID: 8300000, guid: de8f6a61c831f4086a6e56aa756655c1, type: 3}
+    - {fileID: 8300000, guid: d242307039d804d97b0b2cd6a7fe2f4a, type: 3}
+    - {fileID: 8300000, guid: 04fcd84edabbc436a95c0c81bc66b2b9, type: 3}
+    - {fileID: 8300000, guid: 4f04d64ef7fdf435ba5cc38007e010bc, type: 3}
+    - {fileID: 8300000, guid: b320b8fdf55d9ac4caf2f388b02cf1fc, type: 3}

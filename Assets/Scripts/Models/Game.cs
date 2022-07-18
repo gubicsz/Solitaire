@@ -47,12 +47,12 @@ namespace Solitaire.Models
         [Inject] MovesService _movesService;
         [Inject] PointsService _pointsService;
         [Inject] HintService _hintService;
+        [Inject] AudioService _audioService;
         [Inject] Game.Config _gameConfig;
         [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
 
-        bool _hasPlayed;
-        bool _hasWon;
+        BoolReactiveProperty _hasStarted = new BoolReactiveProperty();
 
         public Game()
         {
@@ -62,7 +62,7 @@ namespace Solitaire.Models
             NewMatchCommand = new ReactiveCommand();
             NewMatchCommand.Subscribe(_ => NewMatch()).AddTo(this);
 
-            ContinueCommand = new ReactiveCommand();
+            ContinueCommand = new ReactiveCommand(_hasStarted);
             ContinueCommand.Subscribe(_ => Continue()).AddTo(this);
         }
 
@@ -84,11 +84,12 @@ namespace Solitaire.Models
         {
             if (PileStock.HasCards || !PileWaste.HasCards)
             {
+                IndicateError();
                 return;
             }
 
             // Refill stock pile from waste pile
-            var command = new RefillStockCommand(PileStock, PileWaste, _pointsService, _gameConfig);
+            var command = new RefillStockCommand(PileStock, PileWaste, _pointsService, _audioService, _gameConfig);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -110,11 +111,12 @@ namespace Solitaire.Models
             // Couldn't find move
             if (pile == null)
             {
+                IndicateError();
                 return;
             }
 
             // Move card to pile
-            var command = new MoveCardCommand(card, pile, _pointsService, _gameConfig);
+            var command = new MoveCardCommand(card, pile, _pointsService, _audioService, _gameConfig);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
@@ -128,10 +130,15 @@ namespace Solitaire.Models
             }
 
             // Draw card from stock
-            var command = new DrawCardCommand(PileStock, PileWaste, card);
+            var command = new DrawCardCommand(card, PileStock, PileWaste, _audioService);
             command.Execute();
             _commandService.AddCommand(command);
             _movesService.Increment();
+        }
+
+        public void IndicateError()
+        {
+            _audioService.PlaySfx(Audio.SfxError, 0.5f);
         }
 
         public void DetectWinCondition()
@@ -188,8 +195,10 @@ namespace Solitaire.Models
                 copy.Card.Position.Value = pile.CalculateCardPosition(index, count, prevCard);
             }
 
+            _audioService.PlaySfx(Audio.SfxHint, 0.5f);
+
             // Wait until the animation completes
-            int delayMs = (int)(_cardConfig.AnimationDuration * 1000);
+            int delayMs = (int)(_cardConfig.AnimationDuration * 1000) + 50;
             await UniTask.Delay(delayMs);
 
             // Despawn copies
@@ -228,8 +237,7 @@ namespace Solitaire.Models
             _pointsService.Reset();
             _commandService.Reset();
 
-            _hasPlayed = true;
-            _hasWon = false;
+            _hasStarted.Value = true;
         }
 
         private void ShuffleCards()
@@ -242,10 +250,17 @@ namespace Solitaire.Models
             // Start delaing
             _gameState.State.Value = State.Dealing;
 
+            // Play shuffle sfx
+            _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
+            int delayMs = (int)(_cardConfig.AnimationDuration * 1000) + 50;
+            await UniTask.Delay(delayMs);
+
             // Add cards to the stock pile
-            await UniTask.Delay(300);
             PileStock.AddCards(Cards);
-            await UniTask.Delay(300);
+
+            // Play deal sfx
+            _audioService.PlaySfx(Audio.SfxDeal, 1.0f);
+            await UniTask.Delay(delayMs);
 
             // Deal cards to the Tableau piles
             for (int i = 0; i < PileTableaus.Count; i++)
@@ -272,7 +287,7 @@ namespace Solitaire.Models
         {
             // Start win sequence
             _gameState.State.Value = State.Win;
-            _hasWon = true;
+            _hasStarted.Value = false;
 
             int cardsInTableaus;
 
@@ -325,14 +340,7 @@ namespace Solitaire.Models
 
         private void Continue()
         {
-            if (_hasPlayed && !_hasWon)
-            {
-                _gameState.State.Value = State.Playing;
-            }
-            else
-            {
-                NewMatch();
-            }
+            _gameState.State.Value = State.Playing;
         }
     }
 }

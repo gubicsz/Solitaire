@@ -26,6 +26,7 @@ namespace Solitaire.Installers
             Container.BindInterfacesAndSelfTo<PointsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<HintService>().AsSingle();
             Container.BindInterfacesAndSelfTo<OrientationService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AudioService>().AsSingle();
 
             // Game
             Container.Bind<Game>().AsSingle();
