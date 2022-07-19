@@ -32,6 +32,14 @@ namespace Solitaire.Models
             Win,
         }
 
+        public enum Popup
+        {
+            None,
+            Match,
+            Options,
+        }
+
+        public BoolReactiveProperty HasStarted { get; private set; }
         public ReactiveCommand RestartCommand { get; private set; }
         public ReactiveCommand NewMatchCommand { get; private set; }
         public ReactiveCommand ContinueCommand { get; private set; }
@@ -50,21 +58,22 @@ namespace Solitaire.Models
         [Inject] AudioService _audioService;
         [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
+        [Inject] GamePopup _gamePopup;
         [Inject] DrawCardCommand.Factory _drawCardCommandFactory;
         [Inject] MoveCardCommand.Factory _moveCardCommandFactory;
         [Inject] RefillStockCommand.Factory _refillStockCommandFactory;
 
-        BoolReactiveProperty _hasStarted = new BoolReactiveProperty();
-
         public Game()
         {
+            HasStarted = new BoolReactiveProperty(false);
+
             RestartCommand = new ReactiveCommand();
             RestartCommand.Subscribe(_ => Restart()).AddTo(this);
 
             NewMatchCommand = new ReactiveCommand();
             NewMatchCommand.Subscribe(_ => NewMatch()).AddTo(this);
 
-            ContinueCommand = new ReactiveCommand(_hasStarted);
+            ContinueCommand = new ReactiveCommand(HasStarted);
             ContinueCommand.Subscribe(_ => Continue()).AddTo(this);
         }
 
@@ -234,12 +243,14 @@ namespace Solitaire.Models
             _pointsService.Reset();
             _commandService.Reset();
 
-            _hasStarted.Value = true;
+            HasStarted.Value = true;
+            _gamePopup.State.Value = Popup.None;
         }
 
         private void ShuffleCards()
         {
             Cards = Cards.OrderBy(a => Guid.NewGuid()).ToList();
+            _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
         }
 
         private async UniTask DealAsync()
@@ -248,15 +259,13 @@ namespace Solitaire.Models
             _gameState.State.Value = State.Dealing;
 
             // Play shuffle sfx
-            _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
             int delayMs = (int)(_cardConfig.AnimationDuration * 1000) + 50;
             await UniTask.Delay(delayMs);
 
             // Add cards to the stock pile
             PileStock.AddCards(Cards);
-
-            // Play deal sfx
             _audioService.PlaySfx(Audio.SfxDeal, 1.0f);
+
             await UniTask.Delay(delayMs);
 
             // Deal cards to the Tableau piles
@@ -284,7 +293,7 @@ namespace Solitaire.Models
         {
             // Start win sequence
             _gameState.State.Value = State.Win;
-            _hasStarted.Value = false;
+            HasStarted.Value = false;
 
             int cardsInTableaus;
 
@@ -338,6 +347,7 @@ namespace Solitaire.Models
         private void Continue()
         {
             _gameState.State.Value = State.Playing;
+            _gamePopup.State.Value = Popup.None;
         }
     }
 }

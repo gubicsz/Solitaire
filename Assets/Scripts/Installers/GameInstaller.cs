@@ -34,6 +34,7 @@ namespace Solitaire.Installers
             // Game
             Container.Bind<Game>().AsSingle();
             Container.Bind<GameState>().AsSingle();
+            Container.Bind<GamePopup>().AsSingle();
             Container.Bind<GameControls>().AsSingle();
             Container.Bind<OrientationState>().AsSingle();
             Container.Bind<Options>().AsSingle();

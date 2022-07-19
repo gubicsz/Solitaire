@@ -9,8 +9,6 @@ namespace Solitaire.Models
         [Serializable]
         public class Config
         {
-            [Range(0f, 1f)]
-            public float MusicVolume = 0.5f;
             public List<AudioClip> AudioClips;
         }
 

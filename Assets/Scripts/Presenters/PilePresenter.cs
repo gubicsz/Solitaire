@@ -18,7 +18,6 @@ namespace Solitaire.Presenters
         [Inject] Game _game;
         [Inject] DragAndDropHandler _dndHandler;
         [Inject] OrientationState _orientation;
-        [Inject] AudioService _audioService;
 
         public Pile Pile => _pile;
 

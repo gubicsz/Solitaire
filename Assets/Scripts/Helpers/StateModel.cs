@@ -3,7 +3,7 @@ using UniRx;
 
 namespace Solitaire.Helpers
 {
-    public abstract class StateModel<T> where T : Enum
+    public abstract class StateModel<T> : DisposableEntity where T : Enum
     {
         public ReactiveProperty<T> State { get; private set; }
 

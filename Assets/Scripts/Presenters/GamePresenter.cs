@@ -73,7 +73,7 @@ namespace Solitaire.Presenters
         {
             if (pair.Previous == Game.State.Home)
             {
-                _audioService.PlayMusic(Audio.Music);
+                _audioService.PlayMusic(Audio.Music, 0.2f);
             }
             else if (pair.Current == Game.State.Home)
             {

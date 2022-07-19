@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Solitaire.Presenters
 {
-    public class GamePausedPresenter : MonoBehaviour
+    public class PopupMatchPresenter : MonoBehaviour
     {
         [SerializeField] Button _buttonRestart;
         [SerializeField] Button _buttonNewMatch;
@@ -43,6 +43,7 @@ namespace Solitaire.Presenters
             _panelRect.offsetMin = isLandscape ? new Vector2(250, 150) : new Vector2(150, 250);
             _panelRect.offsetMax = isLandscape ? new Vector2(-250, -150) : new Vector2(-150, -250);
 
+            // TODO: replace layout group with manual position calculation to optimize performance
             _verticalLayout.spacing = isLandscape ? 20 : 40;
 
             Vector2 size = _rectRestart.sizeDelta;

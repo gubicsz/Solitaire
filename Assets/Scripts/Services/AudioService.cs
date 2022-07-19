@@ -13,6 +13,9 @@ namespace Solitaire.Services
         AudioSource _music;
         Tween _tween;
 
+        float _volumeSfx = 1f;
+        float _volumeMusic = 1f;
+
         const float _fadeDuration = 2.0f;
 
         public AudioService(Audio.Config audioConfig)
@@ -25,6 +28,12 @@ namespace Solitaire.Services
                 AudioClip clip = _audioConfig.AudioClips[i];
                 _audioMap.Add(clip.name, clip);
             }
+        }
+
+        public void SetVolume(float volume)
+        {
+            _volumeSfx = volume;
+            _volumeMusic = volume;
         }
 
         public void PlaySfx(string key, float volume)
@@ -42,13 +51,20 @@ namespace Solitaire.Services
                 _camTransform = Camera.main.transform;
             }
 
+            float vol = _volumeSfx * volume;
+
+            if (vol <= 0f)
+            {
+                return;
+            }
+
             // This is just a quick and dirty solution. It is very bad for performance
             // because this call creates and destroys an AudioSource each time.
             // A more professional way would be to use Audio Mixer, buses and pooling.
-            AudioSource.PlayClipAtPoint(clip, _camTransform.position, volume);
+            AudioSource.PlayClipAtPoint(clip, _camTransform.position, vol);
         }
 
-        public void PlayMusic(string key)
+        public void PlayMusic(string key, float volume)
         {
             // Try to get clip based on key
             if (!_audioMap.TryGetValue(key, out AudioClip clip))
@@ -67,9 +83,16 @@ namespace Solitaire.Services
                 _music.loop = true;
             }
 
+            float vol = _volumeMusic * volume;
+
+            if (vol <= 0f)
+            {
+                return;
+            }
+
             // Fade in music
             _tween?.Kill();
-            _tween = _music.DOFade(_audioConfig.MusicVolume, _fadeDuration)
+            _tween = _music.DOFade(vol, _fadeDuration)
                 .SetEase(Ease.InQuad)
                 .OnStart(() =>
                 {
@@ -79,7 +102,7 @@ namespace Solitaire.Services
                 })
                 .OnComplete(() =>
                 {
-                    _music.volume = _audioConfig.MusicVolume;
+                    _music.volume = vol;
                 });
         }
 
