@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Solitaire.Presenters
 {
-    public class PopupMatchPresenter : MonoBehaviour
+    public class PopupMatchPresenter : OrientationAwarePresenter
     {
         [SerializeField] Button _buttonRestart;
         [SerializeField] Button _buttonNewMatch;
@@ -15,33 +15,32 @@ namespace Solitaire.Presenters
         [SerializeField] VerticalLayoutGroup _verticalLayout;
 
         [Inject] Game _game;
-        [Inject] OrientationState _orientation;
 
         RectTransform _rectRestart;
         RectTransform _rectNewMatch;
         RectTransform _rectContinue;
 
-        private void Start()
+        private void Awake()
         {
             _rectRestart = _buttonRestart.GetComponent<RectTransform>();
             _rectNewMatch = _buttonNewMatch.GetComponent<RectTransform>();
             _rectContinue = _buttonContinue.GetComponent<RectTransform>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
 
             // Bind commands
             _game.RestartCommand.BindTo(_buttonRestart).AddTo(this);
             _game.NewMatchCommand.BindTo(_buttonNewMatch).AddTo(this);
             _game.ContinueCommand.BindTo(_buttonContinue).AddTo(this);
-
-            // Update layout on orientation change
-            _orientation.State.Subscribe(orientation => AdjustLayout(orientation)).AddTo(this);
         }
 
-        private void AdjustLayout(Orientation orientation)
+        protected override void OnOrientationChanged(bool isLandscape)
         {
-            bool isLandscape = orientation == Orientation.Landscape;
-
-            _panelRect.offsetMin = isLandscape ? new Vector2(250, 150) : new Vector2(150, 250);
-            _panelRect.offsetMax = isLandscape ? new Vector2(-250, -150) : new Vector2(-150, -250);
+            _panelRect.offsetMin = isLandscape ? new Vector2(250, 200) : new Vector2(150, 250);
+            _panelRect.offsetMax = isLandscape ? new Vector2(-250, -200) : new Vector2(-150, -250);
 
             // TODO: replace layout group with manual position calculation to optimize performance
             _verticalLayout.spacing = isLandscape ? 20 : 40;
