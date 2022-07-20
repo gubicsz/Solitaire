@@ -3413,6 +3413,9 @@ MonoBehaviour:
   _buttonContinue: {fileID: 1558799238}
   _buttonOptions: {fileID: 2131958208}
   _rectCards: {fileID: 974463262}
+  _rectSuitsCenter: {fileID: 889017610}
+  _rectSuitsLeft: {fileID: 1269928723}
+  _rectSuitsRight: {fileID: 220257610}
 --- !u!1001 &1012818297
 PrefabInstance:
   m_ObjectHideFlags: 0
