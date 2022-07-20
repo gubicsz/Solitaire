@@ -26,7 +26,6 @@ namespace Solitaire.Presenters
         [Inject] Card _card;
         [Inject] Card.Config _config;
         [Inject] DragAndDropHandler _dndHandler;
-        [Inject] AudioService _audioService;
 
         Tweener _tweenScale;
         Tweener _tweenMove;

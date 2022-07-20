@@ -31,7 +31,6 @@ namespace Solitaire.Presenters
 
         protected override void OnOrientationChanged(bool isLandscape)
         {
-            // TODO: replace layout group with manual position calculation to optimize performance
             _horizontalLayout.spacing = isLandscape ? 30 : 10;
         }
     }

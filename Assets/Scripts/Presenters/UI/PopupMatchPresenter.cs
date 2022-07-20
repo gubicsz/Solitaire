@@ -42,7 +42,6 @@ namespace Solitaire.Presenters
             _panelRect.offsetMin = isLandscape ? new Vector2(250, 200) : new Vector2(150, 250);
             _panelRect.offsetMax = isLandscape ? new Vector2(-250, -200) : new Vector2(-150, -250);
 
-            // TODO: replace layout group with manual position calculation to optimize performance
             _verticalLayout.spacing = isLandscape ? 20 : 40;
 
             Vector2 size = _rectRestart.sizeDelta;
