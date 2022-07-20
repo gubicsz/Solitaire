@@ -33,7 +33,7 @@ namespace Solitaire.Models
                 audioService.SetVolume(audioEnabled ? 1f : 0f);
 
                 if (audioEnabled)
-                    audioService.PlayMusic(Audio.Music, 0.2f);
+                    audioService.PlayMusic(Audio.Music, 0.3333f);
                 else
                     audioService.StopMusic();
             }).AddTo(this);
