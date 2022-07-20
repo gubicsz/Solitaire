@@ -7,17 +7,12 @@ namespace Solitaire.Services
     {
 #if UNITY_ANDROID
         string _gameId = "4848282";
-#elif UNITY_IOS
-        string _gameId = "4848283";
-#else
-        string _gameId = "unsupported_platform";
-#endif
-
-#if UNITY_ANDROID
         string _placementId = "Banner_Android";
 #elif UNITY_IOS
+        string _gameId = "4848283";
         string _placementId = "Banner_iOS";
 #else
+        string _gameId = "unsupported_platform";
         string _placementId = "Banner";
 #endif
 

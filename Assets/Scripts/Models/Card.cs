@@ -42,10 +42,11 @@ namespace Solitaire.Models
 
         public Suits Suit { get; private set; }
         public Types Type { get; private set; }
-        public BoolReactiveProperty IsFaceUp { get; private set; } = new BoolReactiveProperty();
-        public Vector3ReactiveProperty Position { get; private set; } = new Vector3ReactiveProperty();
-        public IntReactiveProperty Order { get; private set; } = new IntReactiveProperty();
-        public FloatReactiveProperty Alpha { get; private set; } = new FloatReactiveProperty(1);
+        public BoolReactiveProperty IsFaceUp { get; private set; }
+        public Vector3ReactiveProperty Position { get; private set; }
+        public IntReactiveProperty Order { get; private set; }
+        public FloatReactiveProperty Alpha { get; private set; }
+
         public Pile Pile { get; set; }
         public Vector3 DragOrigin { get; set; }
         public Vector3 DragOffset { get; set; }
@@ -57,6 +58,14 @@ namespace Solitaire.Models
         public bool IsOnTop => Pile.TopCard() == this;
         public bool IsMoveable => IsInPile && ((Pile.IsWaste && IsOnTop && IsFaceUp.Value) || (!Pile.IsWaste && IsFaceUp.Value));
         public bool IsDrawable => IsInPile && Pile.IsStock && IsOnTop && !IsFaceUp.Value;
+
+        public Card()
+        {
+            IsFaceUp = new BoolReactiveProperty();
+            Position = new Vector3ReactiveProperty();
+            Order = new IntReactiveProperty();
+            Alpha = new FloatReactiveProperty(1);
+        }
 
         public void Init(Suits suit, Types type)
         {

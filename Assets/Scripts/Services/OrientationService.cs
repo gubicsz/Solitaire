@@ -10,7 +10,6 @@ namespace Solitaire.Services
 
         public void Tick()
         {
-
 #if UNITY_EDITOR
             Orientation orientation = Screen.width > Screen.height ?
                 Orientation.Landscape : Orientation.Portrait;

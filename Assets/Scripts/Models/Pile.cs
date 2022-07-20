@@ -30,6 +30,10 @@ namespace Solitaire.Models
         public bool IsWaste => Type == PileType.Waste;
         public bool IsFoundation => Type == PileType.Foundation;
         public bool IsTableau => Type == PileType.Tableau;
+        public float OffsetDepth => _offsetDepth;
+        public float OffsetVertFaceUp => _offsetVertFaceUp;
+        public float OffsetVertFaceDown => _offsetVertFaceDown;
+        public float OffsetHorizontal => _offsetHorizontal;
 
         List<Card> _splitCards;
 
@@ -225,7 +229,7 @@ namespace Solitaire.Models
             switch (Arrangement)
             {
                 case CardArrangement.Stack:
-                    return Position + _offsetDepth * (index + 1) * Vector3.back;
+                    return Position + OffsetDepth * (index + 1) * Vector3.back;
 
                 case CardArrangement.Waterfall:
                     float verticalOffset = 0f;
@@ -233,24 +237,24 @@ namespace Solitaire.Models
                     if (prevCard != null)
                     {
                         verticalOffset = Mathf.Abs(prevCard.Position.Value.y - Position.y) +
-                            (prevCard.IsFaceUp.Value ? _offsetVertFaceUp : _offsetVertFaceDown);
+                            (prevCard.IsFaceUp.Value ? OffsetVertFaceUp : OffsetVertFaceDown);
                     }
 
-                    return Position + _offsetDepth * (index + 1) * Vector3.back + verticalOffset * Vector3.down;
+                    return Position + OffsetDepth * (index + 1) * Vector3.back + verticalOffset * Vector3.down;
 
                 case CardArrangement.TopThree:
                     float horizontalOffset;
 
                     if (count > 3)
                     {
-                        horizontalOffset = (3 - Mathf.Min(3, count - index)) * _offsetHorizontal;
+                        horizontalOffset = (3 - Mathf.Min(3, count - index)) * OffsetHorizontal;
                     }
                     else
                     {
-                        horizontalOffset = index * _offsetHorizontal;
+                        horizontalOffset = index * OffsetHorizontal;
                     }
 
-                    return Position + _offsetDepth * (index + 1) * Vector3.back + horizontalOffset * Vector3.right;
+                    return Position + OffsetDepth * (index + 1) * Vector3.back + horizontalOffset * Vector3.right;
 
                 default:
                     return Vector3.zero;
