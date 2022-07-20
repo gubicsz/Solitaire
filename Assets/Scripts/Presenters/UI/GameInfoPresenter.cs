@@ -32,9 +32,9 @@ namespace Solitaire.Presenters
 
             _rectMoves.anchorMin = isLandscape ? Vector2.zero : Vector2.one;
             _rectMoves.anchorMax = isLandscape ? Vector2.zero : Vector2.one;
-            _rectMoves.pivot = isLandscape ? Vector2.one : Vector2.zero;
+            _rectMoves.pivot = isLandscape ? Vector2.zero : Vector2.one;
             _rectMoves.SetInsetAndSizeFromParentEdge(isLandscape ? RectTransform.Edge.Left : RectTransform.Edge.Right, isLandscape ? 50 : 0, _rectMoves.sizeDelta.x);
-            _rectMoves.SetInsetAndSizeFromParentEdge(isLandscape ? RectTransform.Edge.Bottom : RectTransform.Edge.Top, isLandscape ? 50 : 0, _rectMoves.sizeDelta.y);
+            _rectMoves.SetInsetAndSizeFromParentEdge(isLandscape ? RectTransform.Edge.Bottom : RectTransform.Edge.Top, isLandscape ? 120 : 0, _rectMoves.sizeDelta.y);
         }
     }
 }

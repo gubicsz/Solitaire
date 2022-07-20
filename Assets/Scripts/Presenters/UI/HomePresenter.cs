@@ -21,6 +21,13 @@ namespace Solitaire.Presenters
         [Inject] GamePopup _gamePopup;
         [Inject] GameState _gameState;
 
+        RectTransform _rectOptions;
+
+        private void Awake()
+        {
+            _rectOptions = _buttonOptions.GetComponent<RectTransform>();
+        }
+
         protected override void Start()
         {
             base.Start();
@@ -37,6 +44,17 @@ namespace Solitaire.Presenters
         protected override void OnOrientationChanged(bool isLandscape)
         {
             _rectCards.anchoredPosition = isLandscape ? new Vector2(0, -120) : Vector2.zero;
+
+            if (isLandscape)
+            {
+                _rectOptions.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 50, _rectOptions.sizeDelta.x);
+            }
+            else
+            {
+                _rectOptions.anchorMin = new Vector2(0.5f, 0f);
+                _rectOptions.anchorMax = new Vector2(0.5f, 0f);
+                _rectOptions.anchoredPosition = new Vector2(0f, _rectOptions.sizeDelta.y);
+            }
 
             PlayAnimationSequence(isLandscape);
         }

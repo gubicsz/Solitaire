@@ -22,7 +22,15 @@ namespace Solitaire.Installers
 
         public override void InstallBindings()
         {
-            // Services
+            InstallServices();
+            InstallGame();
+            InstallPiles();
+            InstallCards();
+            InstallCommands();
+        }
+
+        void InstallServices()
+        {
             Container.BindInterfacesAndSelfTo<CommandService>().AsSingle();
             Container.BindInterfacesAndSelfTo<DragAndDropHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<MovesService>().AsSingle();
@@ -30,27 +38,36 @@ namespace Solitaire.Installers
             Container.BindInterfacesAndSelfTo<HintService>().AsSingle();
             Container.BindInterfacesAndSelfTo<OrientationService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AudioService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AdService>().AsSingle();
+        }
 
-            // Game
+        void InstallGame()
+        {
             Container.Bind<Game>().AsSingle();
             Container.Bind<GameState>().AsSingle();
             Container.Bind<GamePopup>().AsSingle();
             Container.Bind<GameControls>().AsSingle();
             Container.Bind<OrientationState>().AsSingle();
             Container.Bind<Options>().AsSingle();
+        }
 
-            // Piles
+        void InstallPiles()
+        {
             Container.Bind<Pile>().AsTransient();
+        }
 
-            // Cards
+        void InstallCards()
+        {
             Container.Bind<Card>().AsTransient();
             Container.BindInterfacesAndSelfTo<CardSpawner>().AsSingle();
             Container.BindFactory<Card.Suits, Card.Types, CardPresenter, CardPresenter.Factory>()
                 .FromMonoPoolableMemoryPool(x => x.WithInitialSize(52)
                 .FromComponentInNewPrefab(_cardPrefab)
                 .UnderTransformGroup("CardPool"));
+        }
 
-            // Commands
+        void InstallCommands()
+        {
             Container.BindFactory<Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
             Container.BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
