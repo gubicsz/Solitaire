@@ -47,7 +47,7 @@ namespace Solitaire.Presenters
             }
             else
             {
-                _game.IndicateError();
+                _game.PlayErrorSfx();
             }
         }
 

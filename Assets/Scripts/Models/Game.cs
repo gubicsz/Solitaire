@@ -37,6 +37,7 @@ namespace Solitaire.Models
             None,
             Match,
             Options,
+            Leaderboard,
         }
 
         public BoolReactiveProperty HasStarted { get; private set; }
@@ -59,6 +60,7 @@ namespace Solitaire.Models
         [Inject] Card.Config _cardConfig;
         [Inject] GameState _gameState;
         [Inject] GamePopup _gamePopup;
+        [Inject] Leaderboard _leaderboard;
         [Inject] DrawCardCommand.Factory _drawCardCommandFactory;
         [Inject] MoveCardCommand.Factory _moveCardCommandFactory;
         [Inject] RefillStockCommand.Factory _refillStockCommandFactory;
@@ -80,22 +82,20 @@ namespace Solitaire.Models
         public void Init(Pile pileStock, Pile pileWaste, 
             IList<Pile> pileFoundations, IList<Pile> pileTableaus)
         {
-            // Set references
             PileStock = pileStock;
             PileWaste = pileWaste;
             PileFoundations = pileFoundations;
             PileTableaus = pileTableaus;
 
-            // Spawn cards
-            _cardSpawner.SpawnAll();
-            Cards = _cardSpawner.Cards.Select(c => c.Card).ToList();
+            SpawnCards();
+            LoadLeaderboard();
         }
 
         public void RefillStock()
         {
             if (PileStock.HasCards || !PileWaste.HasCards)
             {
-                IndicateError();
+                PlayErrorSfx();
                 return;
             }
 
@@ -122,7 +122,7 @@ namespace Solitaire.Models
             // Couldn't find move
             if (pile == null)
             {
-                IndicateError();
+                PlayErrorSfx();
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace Solitaire.Models
             _movesService.Increment();
         }
 
-        public void IndicateError()
+        public void PlayErrorSfx()
         {
             _audioService.PlaySfx(Audio.SfxError, 0.5f);
         }
@@ -340,6 +340,8 @@ namespace Solitaire.Models
 
             }
             while (cardsInTableaus > 0);
+
+            AddPointsAndSaveLeaderboard();
         }
 
         private void Restart()
@@ -359,6 +361,29 @@ namespace Solitaire.Models
         {
             _gameState.State.Value = State.Playing;
             _gamePopup.State.Value = Popup.None;
+        }
+
+        private void SpawnCards()
+        {
+            _cardSpawner.SpawnAll();
+            Cards = _cardSpawner.Cards.Select(c => c.Card).ToList();
+        }
+
+        private void AddPointsAndSaveLeaderboard()
+        {
+            Leaderboard.Item item = new Leaderboard.Item()
+            {
+                Points = _pointsService.Points.Value,
+                Date = DateTime.Now.ToString("HH:mm MM/dd/yyyy"),
+            };
+
+            _leaderboard.Add(item);
+            _leaderboard.Save();
+        }
+
+        private void LoadLeaderboard()
+        {
+            _leaderboard.Load();
         }
     }
 }

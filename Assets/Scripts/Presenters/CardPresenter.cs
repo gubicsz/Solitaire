@@ -220,7 +220,7 @@ namespace Solitaire.Presenters
             }
             else
             {
-                _game.IndicateError();
+                _game.PlayErrorSfx();
             }
         }
 
@@ -243,7 +243,7 @@ namespace Solitaire.Presenters
                 }
                 else
                 {
-                    _game.IndicateError();
+                    _game.PlayErrorSfx();
                 }
             }
 

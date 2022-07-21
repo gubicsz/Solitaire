@@ -12,6 +12,7 @@ namespace Solitaire.Presenters
         [SerializeField] Button _buttonNewMatch;
         [SerializeField] Button _buttonContinue;
         [SerializeField] Button _buttonOptions;
+        [SerializeField] Button _buttonLeaderboard;
         [SerializeField] RectTransform _rectCards;
         [SerializeField] RectTransform _rectSuitsCenter;
         [SerializeField] RectTransform _rectSuitsLeft;
@@ -22,6 +23,7 @@ namespace Solitaire.Presenters
         [Inject] GameState _gameState;
 
         RectTransform _rectOptions;
+        RectTransform _rectLeaderboard;
         Sequence _sequenceCards;
         Sequence _sequenceSuitsCenter;
         Sequence _sequenceSuitsLeft;
@@ -30,6 +32,7 @@ namespace Solitaire.Presenters
         private void Awake()
         {
             _rectOptions = _buttonOptions.GetComponent<RectTransform>();
+            _rectLeaderboard = _buttonLeaderboard.GetComponent<RectTransform>();
         }
 
         protected override void Start()
@@ -39,6 +42,7 @@ namespace Solitaire.Presenters
             _game.NewMatchCommand.BindTo(_buttonNewMatch).AddTo(this);
             _game.ContinueCommand.BindTo(_buttonContinue).AddTo(this);
             _gamePopup.OptionsCommand.BindTo(_buttonOptions).AddTo(this);
+            _gamePopup.LeaderboardCommand.BindTo(_buttonLeaderboard).AddTo(this);
 
             // Play animation sequence on state change
             _gameState.State.Where(state => state == Game.State.Home).Subscribe(_ => 
@@ -52,12 +56,18 @@ namespace Solitaire.Presenters
             if (isLandscape)
             {
                 _rectOptions.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 50, _rectOptions.sizeDelta.x);
+                _rectLeaderboard.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 50, _rectLeaderboard.sizeDelta.x);
             }
             else
+
             {
                 _rectOptions.anchorMin = new Vector2(0.5f, 0f);
                 _rectOptions.anchorMax = new Vector2(0.5f, 0f);
-                _rectOptions.anchoredPosition = new Vector2(0f, _rectOptions.sizeDelta.y);
+                _rectOptions.anchoredPosition = new Vector2(-70f, _rectOptions.sizeDelta.y);
+
+                _rectLeaderboard.anchorMin = new Vector2(0.5f, 0f);
+                _rectLeaderboard.anchorMax = new Vector2(0.5f, 0f);
+                _rectLeaderboard.anchoredPosition = new Vector2(70f, _rectLeaderboard.sizeDelta.y);
             }
 
             PlayAnimationSequence(isLandscape);

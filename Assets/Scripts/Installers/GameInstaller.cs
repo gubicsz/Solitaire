@@ -39,6 +39,7 @@ namespace Solitaire.Installers
             Container.BindInterfacesAndSelfTo<OrientationService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AudioService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AdService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<StorageService>().AsSingle();
         }
 
         void InstallGame()
@@ -49,6 +50,7 @@ namespace Solitaire.Installers
             Container.Bind<GameControls>().AsSingle();
             Container.Bind<OrientationState>().AsSingle();
             Container.Bind<Options>().AsSingle();
+            Container.Bind<Leaderboard>().AsSingle();
         }
 
         void InstallPiles()

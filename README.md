@@ -5,6 +5,7 @@ A simple Solitaire card game made in Unity 2021 LTS using Model-View-Presenter a
 * Classic gameplay
 * Draw rules (1 and 3 cards)
 * Scoring
+* Leaderboard
 * Undo system
 * Hint system
 * Audio system
