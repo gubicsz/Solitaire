@@ -249,7 +249,18 @@ namespace Solitaire.Models
 
         private void ShuffleCards()
         {
-            Cards = Cards.OrderBy(a => Guid.NewGuid()).ToList();
+            //// Shuffle by sorting
+            //Cards = Cards.OrderBy(a => Guid.NewGuid()).ToList();
+
+            // Fisher-Yates shuffle
+            for (int i = Cards.Count - 1; i > 0; i--)
+            {
+                int n = UnityEngine.Random.Range(0, i + 1);
+                Card temp = Cards[i];
+                Cards[i] = Cards[n];
+                Cards[n] = temp;
+            }
+
             _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
         }
 

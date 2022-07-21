@@ -13,10 +13,27 @@ namespace Solitaire.Presenters
         [SerializeField] Button _buttonMatch;
         [SerializeField] Button _buttonUndo;
         [SerializeField] Button _buttonHint;
-        [SerializeField] HorizontalLayoutGroup _horizontalLayout;
+        [SerializeField] Button _buttonLeaderboard;
 
         [Inject] GameControls _gameControls;
         [Inject] GamePopup _gamePopup;
+
+        RectTransform _rectOptions;
+        RectTransform _rectHome;
+        RectTransform _rectMatch;
+        RectTransform _rectUndo;
+        RectTransform _rectHint;
+        RectTransform _rectLeaderboard;
+
+        private void Awake()
+        {
+            _rectOptions = _buttonOptions.GetComponent<RectTransform>();
+            _rectHome = _buttonHome.GetComponent<RectTransform>();
+            _rectMatch = _buttonMatch.GetComponent<RectTransform>();
+            _rectUndo = _buttonUndo.GetComponent<RectTransform>();
+            _rectHint = _buttonHint.GetComponent<RectTransform>();
+            _rectLeaderboard = _buttonLeaderboard.GetComponent<RectTransform>();
+        }
 
         protected override void Start()
         {
@@ -27,11 +44,17 @@ namespace Solitaire.Presenters
             _gamePopup.MatchCommand.BindTo(_buttonMatch).AddTo(this);
             _gameControls.UndoCommand.BindTo(_buttonUndo).AddTo(this);
             _gameControls.HintCommand.BindTo(_buttonHint).AddTo(this);
+            // todo: leaderboard
         }
 
         protected override void OnOrientationChanged(bool isLandscape)
         {
-            _horizontalLayout.spacing = isLandscape ? 30 : 10;
+            _rectOptions.anchoredPosition = new Vector2(isLandscape ? -350 : -300, _rectOptions.anchoredPosition.y);
+            _rectHome.anchoredPosition = new Vector2(isLandscape ? -210 : -180, _rectHome.anchoredPosition.y);
+            _rectMatch.anchoredPosition = new Vector2(isLandscape ? -70 : -60, _rectMatch.anchoredPosition.y);
+            _rectUndo.anchoredPosition = new Vector2(isLandscape ? 70 : 60, _rectUndo.anchoredPosition.y);
+            _rectHint.anchoredPosition = new Vector2(isLandscape ? 210 : 180, _rectHint.anchoredPosition.y);
+            _rectLeaderboard.anchoredPosition = new Vector2(isLandscape ? 350 : 300, _rectLeaderboard.anchoredPosition.y);
         }
     }
 }

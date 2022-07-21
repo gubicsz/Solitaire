@@ -30,6 +30,7 @@ namespace Solitaire.Presenters
         Tweener _tweenScale;
         Tweener _tweenMove;
         BoxCollider2D _collider;
+        Transform _transform;
         IMemoryPool _pool;
         float _lastClick;
 
@@ -42,6 +43,7 @@ namespace Solitaire.Presenters
         void Start()
         {
             _collider = GetComponent<BoxCollider2D>();
+            _transform = transform;
 
             // Handle alpha change
             _card.Alpha.Subscribe(alpha => UpdateAlpha(alpha)).AddTo(this);
@@ -50,12 +52,15 @@ namespace Solitaire.Presenters
             _card.Order.Subscribe(order => UpdateOrder(order)).AddTo(this);
 
             // Animate card flip
-            _card.IsFaceUp.Where(isFaceUp => (isFaceUp && !_front.gameObject.activeSelf) || (!isFaceUp && !_back.gameObject.activeSelf))
-                .Subscribe(isFaceUp => AnimateFlip(isFaceUp)).AddTo(this);
+            _card.IsFaceUp.Where(isFaceUp => CanFlip(isFaceUp)).Subscribe(isFaceUp => AnimateFlip(isFaceUp)).AddTo(this);
 
             // Animate card movement
-            _card.Position.Where(position => Vector3.SqrMagnitude(position - transform.position) > _moveEpsilon)
-                .Subscribe(position => AnimateMove(position)).AddTo(this);
+            _card.Position.Where(position => CanMove(position)).Subscribe(position => AnimateMove(position)).AddTo(this);
+        }
+
+        bool CanFlip(bool isFaceUp)
+        {
+            return (isFaceUp && !_front.gameObject.activeSelf) || (!isFaceUp && !_back.gameObject.activeSelf);
         }
 
         void AnimateFlip(bool isFaceUp)
@@ -63,12 +68,24 @@ namespace Solitaire.Presenters
             // Scale X from 1 to 0 then back to 1 again,
             // switching beetween front and back sprites in the middle.
             // This gives the illusion of flipping the card in 2D.
-            _tweenScale?.Kill(true);
-            _tweenScale = transform.DOScaleX(0f, _config.AnimationDuration / 2f)
-                .SetLoops(2, LoopType.Yoyo)
-                .SetEase(Ease.Linear)
-                .OnStepComplete(() => Flip(isFaceUp))
-                .OnComplete(() => transform.localScale = Vector3.one);
+            if (_tweenScale == null)
+            {
+                _tweenScale = _transform.DOScaleX(0f, _config.AnimationDuration / 2f)
+                    .SetLoops(2, LoopType.Yoyo)
+                    .SetEase(Ease.Linear)
+                    .SetAutoKill(false)
+                    .OnStepComplete(() => Flip(_card.IsFaceUp.Value))
+                    .OnComplete(() => _transform.localScale = Vector3.one);
+            }
+            else
+            {
+                _tweenScale.Restart();
+            }
+        }
+
+        bool CanMove(Vector3 position)
+        {
+            return Vector3.SqrMagnitude(position - _transform.position) > _moveEpsilon;
         }
 
         void AnimateMove(Vector3 position)
@@ -76,21 +93,31 @@ namespace Solitaire.Presenters
             if (_card.IsDragged)
             {
                 // Update position instanty while the card is being dragged
-                transform.position = position;
+                _transform.position = position;
             }
             else
             {
                 // Move card over time to the target position while changing
                 // order at the start and end so the cards are overlayed correctly.
-                _tweenMove?.Kill(true);
-                _tweenMove = transform.DOLocalMove(position, _config.AnimationDuration)
-                    .SetEase(Ease.OutQuad)
-                    .OnStart(() =>
-                    {
-                        _card.OrderToRestore = _card.IsInPile ? _card.Pile.Cards.IndexOf(_card) : _card.Order.Value;
-                        _card.Order.Value = _animOrder + _card.OrderToRestore;
-                    })
-                    .OnComplete(() => _card.Order.Value = _card.OrderToRestore);
+                if (_tweenMove == null)
+                {
+                    _tweenMove = _transform.DOLocalMove(position, _config.AnimationDuration)
+                        .SetEase(Ease.OutQuad)
+                        .SetAutoKill(false)
+                        .OnRewind(() =>
+                        {
+                            _card.OrderToRestore = _card.IsInPile ? _card.Pile.Cards.IndexOf(_card) : _card.Order.Value;
+                            _card.Order.Value = _animOrder + _card.OrderToRestore;
+                        })
+                        .OnComplete(() =>
+                        {
+                            _card.Order.Value = _card.OrderToRestore;
+                        });
+                }
+                else
+                {
+                    _tweenMove.ChangeEndValue(position, true).Restart();
+                }
             }
         }
 

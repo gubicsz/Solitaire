@@ -69,11 +69,11 @@ namespace Solitaire.Installers
         void InstallCommands()
         {
             Container.BindFactory<Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
-                .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
+                .FromPoolableMemoryPool(x => x.WithInitialSize(256).ExpandByDoubling());
             Container.BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
-                .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
+                .FromPoolableMemoryPool(x => x.WithInitialSize(256).ExpandByDoubling());
             Container.BindFactory<Pile, Pile, RefillStockCommand, RefillStockCommand.Factory>()
-                .FromPoolableMemoryPool(x => x.WithInitialSize(4).ExpandByDoubling());
+                .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
         }
     }
 }

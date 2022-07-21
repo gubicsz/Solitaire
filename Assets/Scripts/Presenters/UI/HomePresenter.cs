@@ -22,6 +22,10 @@ namespace Solitaire.Presenters
         [Inject] GameState _gameState;
 
         RectTransform _rectOptions;
+        Sequence _sequenceCards;
+        Sequence _sequenceSuitsCenter;
+        Sequence _sequenceSuitsLeft;
+        Sequence _sequenceSuitsRight;
 
         private void Awake()
         {
@@ -61,49 +65,66 @@ namespace Solitaire.Presenters
 
         private void PlayAnimationSequence(bool isLandscape)
         {
-            AnimateCards();
+            AnimateCards(ref _sequenceCards);
 
             if (isLandscape)
             {
-                AnimateSuits(_rectSuitsLeft, false);
-                AnimateSuits(_rectSuitsRight, true);
+                AnimateSuits(ref _sequenceSuitsLeft, _rectSuitsLeft, false);
+                AnimateSuits(ref _sequenceSuitsRight, _rectSuitsRight, true);
             }
             else
             {
-                AnimateSuits(_rectSuitsCenter, false);
+                AnimateSuits(ref _sequenceSuitsCenter, _rectSuitsCenter, false);
             }
         }
 
-        private void AnimateCards()
+        private void AnimateCards(ref Sequence sequence)
         {
-            Sequence sequence = DOTween.Sequence();
-
-            for (int i = 1; i < _rectCards.childCount; i++)
+            if (sequence == null)
             {
-                Transform rect = _rectCards.GetChild(i);
-                rect.localEulerAngles = new Vector3(0f, 0f, 37.5f);
+                sequence = DOTween.Sequence();
+                sequence.SetAutoKill(false);
 
-                Tweener tween = rect.DOLocalRotate(new Vector3(0f, 0f, -i * 25f), i * 0.3333f,
-                    RotateMode.LocalAxisAdd).SetEase(Ease.Linear);
+                for (int i = 1; i < _rectCards.childCount; i++)
+                {
+                    Transform rect = _rectCards.GetChild(i);
+                    rect.localEulerAngles = new Vector3(0f, 0f, 37.5f);
 
-                sequence.Insert(0, tween);
+                    Tweener tween = rect
+                        .DOLocalRotate(new Vector3(0f, 0f, -i * 25f), i * 0.3333f, RotateMode.LocalAxisAdd)
+                        .SetEase(Ease.Linear);
+
+                    sequence.Insert(0, tween);
+                }
+            }
+            else
+            {
+                sequence.Restart();
             }
         }
 
-        private void AnimateSuits(RectTransform rectSuits, bool isReverse)
+        private void AnimateSuits(ref Sequence sequence, RectTransform rectSuits, bool isReverse)
         {
-            Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(1f);
-
-            for (int i = isReverse ? rectSuits.childCount - 1 : 0;
-                isReverse ? i >= 0 : i < rectSuits.childCount;
-                i += isReverse ? -1 : 1)
+            if (sequence == null)
             {
-                Transform rect = rectSuits.GetChild(i);
-                rect.transform.localScale = Vector3.zero;
+                sequence = DOTween.Sequence();
+                sequence.SetAutoKill(false);
+                sequence.AppendInterval(1f);
 
-                sequence.Append(rect.DOScale(Vector3.one, 0.125f).SetEase(Ease.InCubic))
-                    .Append(rect.DOPunchScale(Vector3.one * 0.5f, 0.125f).SetEase(Ease.OutCubic));
+                for (int i = isReverse ? rectSuits.childCount - 1 : 0;
+                    isReverse ? i >= 0 : i < rectSuits.childCount;
+                    i += isReverse ? -1 : 1)
+                {
+                    Transform rect = rectSuits.GetChild(i);
+                    rect.transform.localScale = Vector3.zero;
+
+                    sequence.Append(rect.DOScale(Vector3.one, 0.125f).SetEase(Ease.InCubic))
+                        .Append(rect.DOPunchScale(Vector3.one * 0.5f, 0.125f).SetEase(Ease.OutCubic));
+                }
+            }
+            else
+            {
+                sequence.Restart();
             }
         }
     }

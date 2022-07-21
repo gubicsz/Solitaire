@@ -12,7 +12,6 @@ namespace Solitaire.Presenters
         [SerializeField] Button _buttonNewMatch;
         [SerializeField] Button _buttonContinue;
         [SerializeField] RectTransform _panelRect;
-        [SerializeField] VerticalLayoutGroup _verticalLayout;
 
         [Inject] Game _game;
 
@@ -42,13 +41,14 @@ namespace Solitaire.Presenters
             _panelRect.offsetMin = isLandscape ? new Vector2(250, 200) : new Vector2(150, 250);
             _panelRect.offsetMax = isLandscape ? new Vector2(-250, -200) : new Vector2(-150, -250);
 
-            _verticalLayout.spacing = isLandscape ? 20 : 40;
-
             Vector2 size = _rectRestart.sizeDelta;
             size.y = isLandscape ? 70 : 140;
             _rectRestart.sizeDelta = size;
+            _rectRestart.anchoredPosition = new Vector2(_rectRestart.anchoredPosition.x, isLandscape ? 60 : 130);
             _rectNewMatch.sizeDelta = size;
+            _rectNewMatch.anchoredPosition = new Vector2(_rectNewMatch.anchoredPosition.x, isLandscape ? -40 : -40);
             _rectContinue.sizeDelta = size;
+            _rectContinue.anchoredPosition = new Vector2(_rectContinue.anchoredPosition.x, isLandscape ? -140 : -210);
         }
     }
 }

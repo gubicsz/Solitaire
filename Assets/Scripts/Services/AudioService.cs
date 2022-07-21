@@ -11,7 +11,8 @@ namespace Solitaire.Services
         Audio.Config _audioConfig;
         Transform _camTransform;
         AudioSource _music;
-        Tween _tween;
+        Tweener _tweenFadeIn;
+        Tweener _tweenFadeOut;
 
         float _volumeSfx = 1f;
         float _volumeMusic = 1f;
@@ -73,6 +74,13 @@ namespace Solitaire.Services
                 return;
             }
 
+            float vol = _volumeMusic * volume;
+
+            if (vol <= 0f)
+            {
+                return;
+            }
+
             // Create audio source if for the first time
             if (_music == null)
             {
@@ -81,29 +89,30 @@ namespace Solitaire.Services
                 _music.spatialBlend = 0;
                 _music.volume = 0;
                 _music.loop = true;
+                _music.volume = 0f;
+                _music.clip = clip;
+                _music.Play();
             }
-
-            float vol = _volumeMusic * volume;
-
-            if (vol <= 0f)
+            else
             {
-                return;
+                _music.clip = clip;
             }
+
+            // Stop fade out
+            _tweenFadeOut?.Pause();
 
             // Fade in music
-            _tween?.Kill();
-            _tween = _music.DOFade(vol, _fadeDuration)
-                .SetEase(Ease.InQuad)
-                .OnStart(() =>
-                {
-                    _music.clip = clip;
-                    _music.volume = 0f;
-                    _music.Play();
-                })
-                .OnComplete(() =>
-                {
-                    _music.volume = vol;
-                });
+            if (_tweenFadeIn == null)
+            {
+                _tweenFadeIn = _music.DOFade(vol, _fadeDuration)
+                    .SetEase(Ease.InQuad)
+                    .SetAutoKill(false)
+                    .OnRewind(() => _music.Play());
+            }
+            else
+            {
+                _tweenFadeIn.Restart();
+            }
         }
 
         public void StopMusic()
@@ -114,15 +123,21 @@ namespace Solitaire.Services
                 return;
             }
 
+            // Stop fade in
+            _tweenFadeIn?.Pause();
+
             // Fade out music
-            _tween?.Kill();
-            _tween = _music.DOFade(0f, _fadeDuration)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(() =>
-                {
-                    _music.volume = 0f;
-                    _music.Stop();
-                });
+            if (_tweenFadeOut == null)
+            {
+                _tweenFadeOut = _music.DOFade(0f, _fadeDuration)
+                    .SetEase(Ease.OutQuad)
+                    .SetAutoKill(false)
+                    .OnComplete(() => _music.Stop());
+            }
+            else
+            {
+                _tweenFadeOut.Restart();
+            }
         }
     }
 }

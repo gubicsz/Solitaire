@@ -66,8 +66,8 @@ namespace Solitaire.Services
                 }
 
                 card.IsDragged = false;
-                card.Position.Value = card.DragOrigin;
                 card.Order.Value = card.OrderToRestore;
+                card.Position.Value = card.DragOrigin;
             }
         }
 
