@@ -17,7 +17,7 @@ namespace Solitaire.Services
         float _volumeSfx = 1f;
         float _volumeMusic = 1f;
 
-        const float _fadeDuration = 2.0f;
+        const float FadeDuration = 2.0f;
 
         public AudioService(Audio.Config audioConfig)
         {
@@ -104,7 +104,7 @@ namespace Solitaire.Services
             // Fade in music
             if (_tweenFadeIn == null)
             {
-                _tweenFadeIn = _music.DOFade(vol, _fadeDuration)
+                _tweenFadeIn = _music.DOFade(vol, FadeDuration)
                     .SetEase(Ease.InQuad)
                     .SetAutoKill(false)
                     .OnRewind(() => _music.Play());
@@ -129,7 +129,7 @@ namespace Solitaire.Services
             // Fade out music
             if (_tweenFadeOut == null)
             {
-                _tweenFadeOut = _music.DOFade(0f, _fadeDuration)
+                _tweenFadeOut = _music.DOFade(0f, FadeDuration)
                     .SetEase(Ease.OutQuad)
                     .SetAutoKill(false)
                     .OnComplete(() => _music.Stop());

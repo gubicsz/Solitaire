@@ -22,10 +22,10 @@ namespace Solitaire.Presenters
         [SerializeField] SpriteRenderer _suit1;
         [SerializeField] SpriteRenderer _suit2;
 
-        [Inject] Game _game;
-        [Inject] Card _card;
-        [Inject] Card.Config _config;
-        [Inject] DragAndDropHandler _dndHandler;
+        [Inject] readonly Game _game;
+        [Inject] readonly Card _card;
+        [Inject] readonly Card.Config _config;
+        [Inject] readonly DragAndDropHandler _dndHandler;
 
         Tweener _tweenScale;
         Tweener _tweenMove;
@@ -36,9 +36,9 @@ namespace Solitaire.Presenters
 
         public Card Card => _card;
 
-        const float _doubleClickInterval = 0.4f;
-        const float _moveEpsilon = 0.00001f;
-        const int _animOrder = 100;
+        const float DoubleClickInterval = 0.4f;
+        const float MoveEpsilon = 0.00001f;
+        const int AnimOrder = 100;
 
         void Start()
         {
@@ -46,16 +46,16 @@ namespace Solitaire.Presenters
             _transform = transform;
 
             // Handle alpha change
-            _card.Alpha.Subscribe(alpha => UpdateAlpha(alpha)).AddTo(this);
+            _card.Alpha.Subscribe(UpdateAlpha).AddTo(this);
 
             // Handle order change 
-            _card.Order.Subscribe(order => UpdateOrder(order)).AddTo(this);
+            _card.Order.Subscribe(UpdateOrder).AddTo(this);
 
             // Animate card flip
-            _card.IsFaceUp.Where(isFaceUp => CanFlip(isFaceUp)).Subscribe(isFaceUp => AnimateFlip(isFaceUp)).AddTo(this);
+            _card.IsFaceUp.Where(CanFlip).Subscribe(AnimateFlip).AddTo(this);
 
             // Animate card movement
-            _card.Position.Where(position => CanMove(position)).Subscribe(position => AnimateMove(position)).AddTo(this);
+            _card.Position.Where(CanMove).Subscribe(AnimateMove).AddTo(this);
         }
 
         bool CanFlip(bool isFaceUp)
@@ -66,7 +66,7 @@ namespace Solitaire.Presenters
         void AnimateFlip(bool isFaceUp)
         {
             // Scale X from 1 to 0 then back to 1 again,
-            // switching beetween front and back sprites in the middle.
+            // switching between front and back sprites in the middle.
             // This gives the illusion of flipping the card in 2D.
             if (_tweenScale == null)
             {
@@ -85,20 +85,20 @@ namespace Solitaire.Presenters
 
         bool CanMove(Vector3 position)
         {
-            return Vector3.SqrMagnitude(position - _transform.position) > _moveEpsilon;
+            return Vector3.SqrMagnitude(position - _transform.position) > MoveEpsilon;
         }
 
         void AnimateMove(Vector3 position)
         {
             if (_card.IsDragged)
             {
-                // Update position instanty while the card is being dragged
+                // Update position instantly while the card is being dragged
                 _transform.position = position;
             }
             else
             {
                 // Move card over time to the target position while changing
-                // order at the start and end so the cards are overlayed correctly.
+                // order at the start and end so the cards are overlaid correctly.
                 if (_tweenMove == null)
                 {
                     _tweenMove = _transform.DOLocalMove(position, _config.AnimationDuration)
@@ -107,7 +107,7 @@ namespace Solitaire.Presenters
                         .OnRewind(() =>
                         {
                             _card.OrderToRestore = _card.IsInPile ? _card.Pile.Cards.IndexOf(_card) : _card.Order.Value;
-                            _card.Order.Value = _animOrder + _card.OrderToRestore;
+                            _card.Order.Value = AnimOrder + _card.OrderToRestore;
                         })
                         .OnComplete(() =>
                         {
@@ -235,7 +235,7 @@ namespace Solitaire.Presenters
             {
                 _game.DrawCard();
             }
-            else if ((_lastClick + _doubleClickInterval) > Time.time)
+            else if ((_lastClick + DoubleClickInterval) > Time.time)
             {
                 if (_card.IsMoveable)
                 {

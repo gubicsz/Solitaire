@@ -37,12 +37,12 @@ namespace Solitaire.Models
         public ReactiveCollection<Item> Items { get; private set; }
         public ReactiveCommand CloseCommand { get; private set; }
 
-        GameState _gameState;
-        GamePopup _gamePopup;
+        readonly GameState _gameState;
+        readonly GamePopup _gamePopup;
         readonly IStorageService _storageService;
 
-        const string _storageKey = "Leaderboard";
-        const int _maxCount = 9;
+        const string StorageKey = "Leaderboard";
+        const int MaxCount = 9;
 
         public Leaderboard(GameState gameState, GamePopup gamePopup, IStorageService storageService)
         {
@@ -62,7 +62,7 @@ namespace Solitaire.Models
             originalList.Add(leaderboardItem);
 
             // Order items and update leaderboard
-            var orderedList = originalList.OrderByDescending(x => x, this).Take(_maxCount).ToList();
+            var orderedList = originalList.OrderByDescending(x => x, this).Take(MaxCount).ToList();
 
             // Update leaderboard
             if (orderedList != null)
@@ -76,13 +76,13 @@ namespace Solitaire.Models
             var leaderboard = new Data() { Items = Items.ToList() };
 
             // Save leaderboard to the device
-            _storageService.Save(_storageKey, leaderboard);
+            _storageService.Save(StorageKey, leaderboard);
         }
 
         public void Load()
         {
             // Load leaderboard from the device
-            Data leaderboard = _storageService.Load<Data>(_storageKey);
+            Data leaderboard = _storageService.Load<Data>(StorageKey);
 
             // Update leaderboard
             if (leaderboard != null)

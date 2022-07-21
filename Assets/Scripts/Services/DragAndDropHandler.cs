@@ -10,7 +10,7 @@ namespace Solitaire.Services
         Camera _camera;
         IList<Card> _draggedCards;
 
-        const int _dragOrder = 100;
+        const int DragOrder = 100;
 
         public DragAndDropHandler()
         {
@@ -29,7 +29,7 @@ namespace Solitaire.Services
                 card.DragOrigin = card.Position.Value;
                 card.DragOffset = card.DragOrigin - dragPos;
                 card.OrderToRestore = card.Pile.Cards.IndexOf(card);
-                card.Order.Value = _dragOrder + i;
+                card.Order.Value = DragOrder + i;
                 card.IsDragged = true;
             }
         }

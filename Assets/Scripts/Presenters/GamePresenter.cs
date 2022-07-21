@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Solitaire.Models;
 using Solitaire.Services;
 using System.Linq;
@@ -17,15 +16,15 @@ namespace Solitaire.Presenters
         [SerializeField] PilePresenter[] _pileFoundations;
         [SerializeField] PilePresenter[] _pileTableaus;
     
-        [Inject] Game _game;
-        [Inject] GameState _gameState;
-        [Inject] OrientationState _orientation;
-        [Inject] AudioService _audioService;
+        [Inject] readonly Game _game;
+        [Inject] readonly GameState _gameState;
+        [Inject] readonly OrientationState _orientation;
+        [Inject] readonly AudioService _audioService;
 
         Camera _camera;
 
-        const float _camSizeLandscape = 4.25f;
-        const float _camSizePortrait = 8.25f;
+        const float CamSizeLandscape = 4.25f;
+        const float CamSizePortrait = 8.25f;
 
         private void Awake()
         {
@@ -35,13 +34,13 @@ namespace Solitaire.Presenters
         private void Start()
         {
             // Update camera on orientation change
-            _orientation.State.Subscribe(orientation => AdjustCamera(orientation)).AddTo(this);
+            _orientation.State.Subscribe(AdjustCamera).AddTo(this);
 
             // Enable card interactions only while playing
-            _gameState.State.Subscribe(gameState => ManageCardRaycaster(gameState)).AddTo(this);
+            _gameState.State.Subscribe(ManageCardRaycaster).AddTo(this);
 
             // Manage music based on game state
-            _gameState.State.Pairwise().Subscribe(pair => ManageMusic(pair)).AddTo(this);
+            _gameState.State.Pairwise().Subscribe(ManageMusic).AddTo(this);
 
             // Initialize game
             _game.Init(_pileStock.Pile, _pileWaste.Pile, 
@@ -61,7 +60,7 @@ namespace Solitaire.Presenters
         private void AdjustCamera(Orientation orientation)
         {
             _camera.orthographicSize = (orientation == Orientation.Landscape ? 
-                _camSizeLandscape : _camSizePortrait);
+                CamSizeLandscape : CamSizePortrait);
         }
 
         private void ManageCardRaycaster(Game.State gameState)

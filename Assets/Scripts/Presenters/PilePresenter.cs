@@ -14,10 +14,10 @@ namespace Solitaire.Presenters
         [SerializeField] Vector3 PosPortrait;
         [SerializeField] Vector3 PosLandscape;
 
-        [Inject] Pile _pile;
-        [Inject] Game _game;
-        [Inject] DragAndDropHandler _dndHandler;
-        [Inject] OrientationState _orientation;
+        [Inject] readonly Pile _pile;
+        [Inject] readonly Game _game;
+        [Inject] readonly DragAndDropHandler _dndHandler;
+        [Inject] readonly OrientationState _orientation;
 
         public Pile Pile => _pile;
 
@@ -26,10 +26,10 @@ namespace Solitaire.Presenters
             _pile.Init(Type, Arrangement, transform.position);
         }
 
-        private void Start()
+        void Start()
         {
             // Update layout on orientation change
-            _orientation.State.Subscribe(orientation => UpdateLayout(orientation)).AddTo(this);
+            _orientation.State.Subscribe(UpdateLayout).AddTo(this);
         }
 
         public void OnDrop(PointerEventData eventData)

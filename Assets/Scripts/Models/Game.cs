@@ -260,23 +260,21 @@ namespace Solitaire.Models
                 Cards[i] = Cards[n];
                 Cards[n] = temp;
             }
-
-            _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
         }
 
         private async UniTask DealAsync()
         {
-            // Start delaing
+            // Start dealing
             _gameState.State.Value = State.Dealing;
-
-            // Play shuffle sfx
             int delayMs = (int)(_cardConfig.AnimationDuration * 1000) + 50;
+
+            _audioService.PlaySfx(Audio.SfxShuffle, 0.5f);
             await UniTask.Delay(delayMs);
 
             // Add cards to the stock pile
             PileStock.AddCards(Cards);
-            _audioService.PlaySfx(Audio.SfxDeal, 1.0f);
 
+            _audioService.PlaySfx(Audio.SfxDeal, 1.0f);
             await UniTask.Delay(delayMs);
 
             // Deal cards to the Tableau piles
@@ -371,7 +369,7 @@ namespace Solitaire.Models
 
         private void AddPointsAndSaveLeaderboard()
         {
-            Leaderboard.Item item = new Leaderboard.Item()
+            var item = new Leaderboard.Item()
             {
                 Points = _pointsService.Points.Value,
                 Date = DateTime.Now.ToString("HH:mm MM/dd/yyyy"),

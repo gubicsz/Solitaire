@@ -30,17 +30,17 @@ namespace Solitaire.Models
         public bool IsWaste => Type == PileType.Waste;
         public bool IsFoundation => Type == PileType.Foundation;
         public bool IsTableau => Type == PileType.Tableau;
-        public float OffsetDepth => _offsetDepth;
-        public float OffsetVertFaceUp => _offsetVertFaceUp;
-        public float OffsetVertFaceDown => _offsetVertFaceDown;
-        public float OffsetHorizontal => _offsetHorizontal;
+        public float OffsetDepth => Depth;
+        public float OffsetVertFaceUp => VertFaceUp;
+        public float OffsetVertFaceDown => VertFaceDown;
+        public float OffsetHorizontal => Horizontal;
 
-        List<Card> _splitCards;
+        readonly List<Card> _splitCards;
 
-        const float _offsetDepth = 0.005f;
-        const float _offsetVertFaceUp = 0.5f;
-        const float _offsetVertFaceDown = 0.2f;
-        const float _offsetHorizontal = 0.3f;
+        const float Depth = 0.005f;
+        const float VertFaceUp = 0.5f;
+        const float VertFaceDown = 0.2f;
+        const float Horizontal = 0.3f;
 
         public Pile()
         {
