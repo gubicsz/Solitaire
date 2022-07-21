@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6329372171245238291}
   - component: {fileID: 6329372171245238380}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6329372171879651321}
   - component: {fileID: 6329372171879651322}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Suit1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6329372172150840471}
   - component: {fileID: 6329372172150840464}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6329372172652588354}
   - component: {fileID: 6329372172652588355}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Type
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -427,7 +427,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6329372173094553369}
   - component: {fileID: 6329372173094553370}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Suit2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

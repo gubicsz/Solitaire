@@ -22,6 +22,7 @@ namespace Solitaire.Presenters
         [Inject] readonly AudioService _audioService;
 
         Camera _camera;
+        int _layerInteractable;
 
         const float CamSizeLandscape = 4.25f;
         const float CamSizePortrait = 8.25f;
@@ -29,6 +30,7 @@ namespace Solitaire.Presenters
         private void Awake()
         {
             _camera = Camera.main;
+            _layerInteractable = LayerMask.NameToLayer("Interactable");
         }
 
         private void Start()
@@ -36,16 +38,15 @@ namespace Solitaire.Presenters
             // Update camera on orientation change
             _orientation.State.Subscribe(AdjustCamera).AddTo(this);
 
-            // Enable card interactions only while playing
-            _gameState.State.Subscribe(ManageCardRaycaster).AddTo(this);
-
-            // Manage music based on game state
-            _gameState.State.Pairwise().Subscribe(ManageMusic).AddTo(this);
+            // Handle game state change
+            _gameState.State.Pairwise().Subscribe(HandleGameStateChanges).AddTo(this);
 
             // Initialize game
             _game.Init(_pileStock.Pile, _pileWaste.Pile, 
                 _pileFoundations.Select(p => p.Pile).ToList(), 
                 _pileTableaus.Select(p => p.Pile).ToList());
+
+            SetCameraLayers(true);
         }
 
         private void Update()
@@ -63,20 +64,34 @@ namespace Solitaire.Presenters
                 CamSizeLandscape : CamSizePortrait);
         }
 
-        private void ManageCardRaycaster(Game.State gameState)
+        private void HandleGameStateChanges(Pair<Game.State> state)
         {
-            _cardRaycaster.enabled = gameState == Game.State.Playing;
-        }
-
-        private void ManageMusic(Pair<Game.State> pair)
-        {
-            if (pair.Previous == Game.State.Home)
+            if (state.Previous == Game.State.Home)
             {
+                // Render everything and play music
+                SetCameraLayers(false);
                 _audioService.PlayMusic(Audio.Music, 0.3333f);
             }
-            else if (pair.Current == Game.State.Home)
+            else if (state.Current == Game.State.Home)
             {
+                // Cull game elements and stop music
+                SetCameraLayers(true);
                 _audioService.StopMusic();
+            }
+
+            // Enable card interactions only while playing
+            _cardRaycaster.enabled = state.Current == Game.State.Playing;
+        }
+
+        private void SetCameraLayers(bool cullGame)
+        {
+            if (cullGame)
+            {
+                _camera.cullingMask = ~(1 << _layerInteractable);
+            }
+            else
+            {
+                _camera.cullingMask = ~0;
             }
         }
     }
