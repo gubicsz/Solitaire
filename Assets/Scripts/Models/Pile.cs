@@ -145,6 +145,20 @@ namespace Solitaire.Models
             {
                 UpdateCardPosition(card);
             }
+
+            // Set visibility and interactability of previous card based on arrangement
+            if (Arrangement == CardArrangement.Stack && Cards.Count >= 3)
+            {
+                Card thirdFromTop = Cards[^3];
+                thirdFromTop.IsVisible.Value = false;
+                thirdFromTop.IsInteractable.Value = false;
+            }
+            else if (Arrangement == CardArrangement.TopThree && Cards.Count >= 7)
+            {
+                Card fifthFromTop = Cards[^7];
+                fifthFromTop.IsVisible.Value = false;
+                fifthFromTop.IsInteractable.Value = false;
+            }
         }
 
         public void RemoveCard(Card card)
@@ -166,6 +180,20 @@ namespace Solitaire.Models
                 {
                     UpdateCardPosition(Cards[i]);
                 }
+            }
+
+            // Set visibility and interactability of previous card based on arrangement
+            if (Arrangement == CardArrangement.Stack && Cards.Count >= 2)
+            {
+                Card secondFromTop = Cards[^2];
+                secondFromTop.IsVisible.Value = true;
+                secondFromTop.IsInteractable.Value = true;
+            }
+            else if (Arrangement == CardArrangement.TopThree && Cards.Count >= 3)
+            {
+                Card thirdFromTop = Cards[^3];
+                thirdFromTop.IsVisible.Value = true;
+                thirdFromTop.IsInteractable.Value = true;
             }
         }
 

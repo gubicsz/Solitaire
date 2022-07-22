@@ -26,6 +26,8 @@ namespace Solitaire.Tests
             Assert.That(_card.Position != null);
             Assert.That(_card.Order != null);
             Assert.That(_card.Alpha != null);
+            Assert.That(_card.IsVisible != null);
+            Assert.That(_card.IsInteractable != null);
         }
 
         [Test]
@@ -110,6 +112,8 @@ namespace Solitaire.Tests
             Assert.That(_card.Position.Value == position);
             Assert.That(_card.Order.Value == 0);
             Assert.That(_card.Alpha.Value == 1f);
+            Assert.That(_card.IsVisible.Value == true);
+            Assert.That(_card.IsInteractable.Value == true);
             Assert.That(_card.DragOrigin == Vector3.zero);
             Assert.That(_card.DragOffset == Vector3.zero);
             Assert.That(_card.OrderToRestore == 0);

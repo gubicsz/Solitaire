@@ -263,6 +263,42 @@ namespace Solitaire.Tests
         }
 
         [Test]
+        public void Should_SetVisibilityOfThirdCardFromTop_When_AddingCardWithStackArrangement()
+        {
+            _pile.Init(Pile.PileType.Stock, Pile.CardArrangement.Stack, Vector3.up);
+
+            for (int i = 0; i < 3; i++)
+            {
+                _pile.AddCard(new Card());
+            }
+
+            for (int i = 1; i <= 3; i++)
+            {
+                Card card = _pile.Cards[^i];
+                Assert.That(card.IsVisible.Value == i < 3);
+                Assert.That(card.IsInteractable.Value == i < 3);
+            }
+        }
+
+        [Test]
+        public void Should_SetVisibilityOfSeventhCardFromTop_When_AddingCardWithTopThreeArrangement()
+        {
+            _pile.Init(Pile.PileType.Waste, Pile.CardArrangement.TopThree, Vector3.up);
+
+            for (int i = 0; i < 7; i++)
+            {
+                _pile.AddCard(new Card());
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                Card card = _pile.Cards[^i];
+                Assert.That(card.IsVisible.Value == i < 7);
+                Assert.That(card.IsInteractable.Value == i < 7);
+            }
+        }
+
+        [Test]
         public void Should_KeepCard_When_RemovingNull()
         {
             _pile.AddCard(_card);
@@ -281,6 +317,46 @@ namespace Solitaire.Tests
 
             Assert.That(_pile.HasCards == false);
             Assert.That(_card.IsInPile == false);
+        }
+
+        [Test]
+        public void Should_SetVisibilityOfSecondCardFromTop_When_RemovingCardWithStackArrangement()
+        {
+            _pile.Init(Pile.PileType.Stock, Pile.CardArrangement.Stack, Vector3.up);
+
+            for (int i = 0; i < 3; i++)
+            {
+                _pile.AddCard(new Card());
+            }
+
+            _pile.RemoveCard(_pile.TopCard());
+
+            for (int i = 1; i <= 2; i++)
+            {
+                Card card = _pile.Cards[^i];
+                Assert.That(card.IsVisible.Value == true);
+                Assert.That(card.IsInteractable.Value == true);
+            }
+        }
+
+        [Test]
+        public void Should_SetVisibilityOfForthCardFromTop_When_RemovingCardWithTopThreeArrangement()
+        {
+            _pile.Init(Pile.PileType.Waste, Pile.CardArrangement.TopThree, Vector3.up);
+
+            for (int i = 0; i < 4; i++)
+            {
+                _pile.AddCard(new Card());
+            }
+
+            _pile.RemoveCard(_pile.TopCard());
+
+            for (int i = 1; i <= 3; i++)
+            {
+                Card card = _pile.Cards[^i];
+                Assert.That(card.IsVisible.Value == true);
+                Assert.That(card.IsInteractable.Value == true);
+            }
         }
 
         [Test]

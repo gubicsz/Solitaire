@@ -46,6 +46,8 @@ namespace Solitaire.Models
         public Vector3ReactiveProperty Position { get; private set; }
         public IntReactiveProperty Order { get; private set; }
         public FloatReactiveProperty Alpha { get; private set; }
+        public BoolReactiveProperty IsVisible { get; private set; }
+        public BoolReactiveProperty IsInteractable { get; private set; }
 
         public Pile Pile { get; set; }
         public Vector3 DragOrigin { get; set; }
@@ -65,6 +67,8 @@ namespace Solitaire.Models
             Position = new Vector3ReactiveProperty();
             Order = new IntReactiveProperty();
             Alpha = new FloatReactiveProperty(1);
+            IsVisible = new BoolReactiveProperty(true);
+            IsInteractable = new BoolReactiveProperty(true);
         }
 
         public void Init(Suits suit, Types type)
@@ -80,6 +84,8 @@ namespace Solitaire.Models
             Position.Value = position;
             Order.Value = 0;
             Alpha.Value = 1f;
+            IsVisible.Value = true;
+            IsInteractable.Value = true;
             DragOrigin = Vector3.zero;
             DragOffset = Vector3.zero;
             OrderToRestore = 0;

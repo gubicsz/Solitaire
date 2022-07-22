@@ -45,16 +45,11 @@ namespace Solitaire.Presenters
             _collider = GetComponent<BoxCollider2D>();
             _transform = transform;
 
-            // Handle alpha change
             _card.Alpha.Subscribe(UpdateAlpha).AddTo(this);
-
-            // Handle order change 
             _card.Order.Subscribe(UpdateOrder).AddTo(this);
-
-            // Animate card flip
+            _card.IsVisible.Subscribe(UpdateVisiblity).AddTo(this);
+            _card.IsInteractable.Subscribe(UpdateInteractability).AddTo(this);
             _card.IsFaceUp.Where(CanFlip).Subscribe(AnimateFlip).AddTo(this);
-
-            // Animate card movement
             _card.Position.Where(CanMove).Subscribe(AnimateMove).AddTo(this);
         }
 
@@ -155,6 +150,20 @@ namespace Solitaire.Presenters
             _suit2.color = color;
         }
 
+        void UpdateVisiblity(bool isVisible)
+        {
+            _back.enabled = isVisible;
+            _front.enabled = isVisible;
+            _type.enabled = isVisible;
+            _suit1.enabled = isVisible;
+            _suit2.enabled = isVisible;
+        }
+
+        void UpdateInteractability(bool isInteractable)
+        {
+            _collider.enabled = isInteractable;
+        }
+
         void Initialize()
         {
             name = $"Card_{_card.Suit}_{_card.Type}";
@@ -184,7 +193,7 @@ namespace Solitaire.Presenters
             if (_card.IsMoveable)
             {
                 _dndHandler.BeginDrag(eventData, _card.Pile.SplitAt(_card));
-                _collider.enabled = false;
+                _card.IsInteractable.Value = false;
             }
         }
 
@@ -201,7 +210,7 @@ namespace Solitaire.Presenters
             if (_card.IsMoveable)
             {
                 _dndHandler.EndDrag();
-                _collider.enabled = true;
+                _card.IsInteractable.Value = true;
             }
         }
 
