@@ -5,7 +5,7 @@ namespace Solitaire.Services
 {
     public class HintService
     {
-        Game _game;
+        readonly Game _game;
 
         public HintService(Game game)
         {

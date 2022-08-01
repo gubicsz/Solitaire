@@ -6,7 +6,12 @@ namespace Solitaire.Services
 {
     public class OrientationService : ITickable
     {
-        [Inject] OrientationState _orientation;
+        readonly OrientationState _orientation;
+
+        public OrientationService(OrientationState orientation)
+        {
+            _orientation = orientation;
+        }
 
         public void Tick()
         {

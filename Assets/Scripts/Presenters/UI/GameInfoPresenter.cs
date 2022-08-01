@@ -14,8 +14,8 @@ namespace Solitaire.Presenters
         [SerializeField] RectTransform _rectTime;
         [SerializeField] RectTransform _rectMoves;
 
-        [Inject] PointsService _pointsService;
-        [Inject] MovesService _movesService;
+        [Inject] readonly PointsService _pointsService;
+        [Inject] readonly MovesService _movesService;
 
         protected override void Start()
         {

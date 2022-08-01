@@ -16,8 +16,8 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject] Card _card;
-        [Inject] Pile _pile;
+        [Inject] readonly Card _card;
+        [Inject] readonly Pile _pile;
 
         [Test]
         public void Should_InitReactiveProperties_When_Created()

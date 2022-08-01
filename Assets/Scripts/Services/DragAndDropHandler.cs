@@ -7,7 +7,7 @@ namespace Solitaire.Services
 {
     public class DragAndDropHandler
     {
-        Camera _camera;
+        readonly Camera _camera;
         IList<Card> _draggedCards;
 
         const int DragOrder = 100;

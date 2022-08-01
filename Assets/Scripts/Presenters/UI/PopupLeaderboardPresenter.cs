@@ -15,7 +15,7 @@ namespace Solitaire.Presenters
         [SerializeField] RectTransform _panelRect;
         [SerializeField] List<LeaderboardItemPresenter> _itemPresenters;
 
-        [Inject] Leaderboard _leaderboard;
+        [Inject] readonly Leaderboard _leaderboard;
 
         protected override void Start()
         {

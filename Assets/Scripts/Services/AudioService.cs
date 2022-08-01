@@ -7,8 +7,8 @@ namespace Solitaire.Services
 {
     public class AudioService
     {
-        Dictionary<string, AudioClip> _audioMap;
-        Audio.Config _audioConfig;
+        readonly Dictionary<string, AudioClip> _audioMap;
+        readonly Audio.Config _audioConfig;
         Transform _camTransform;
         AudioSource _music;
         Tweener _tweenFadeIn;

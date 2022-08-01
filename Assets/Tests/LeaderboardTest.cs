@@ -21,17 +21,10 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject]
-        readonly Leaderboard _leaderboard;
-
-        [Inject]
-        readonly GameState _gameState;
-
-        [Inject]
-        readonly GamePopup _gamePopup;
-
-        [Inject]
-        readonly IStorageService _storageService;
+        [Inject] readonly Leaderboard _leaderboard;
+        [Inject] readonly GameState _gameState;
+        [Inject] readonly GamePopup _gamePopup;
+        [Inject] readonly IStorageService _storageService;
 
         readonly Leaderboard.Data _testLeaderboard = new()
         {

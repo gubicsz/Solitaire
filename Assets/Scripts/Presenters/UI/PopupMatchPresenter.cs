@@ -13,7 +13,7 @@ namespace Solitaire.Presenters
         [SerializeField] Button _buttonContinue;
         [SerializeField] RectTransform _panelRect;
 
-        [Inject] Game _game;
+        [Inject] readonly Game _game;
 
         RectTransform _rectRestart;
         RectTransform _rectNewMatch;

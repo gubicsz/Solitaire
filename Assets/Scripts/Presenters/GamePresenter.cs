@@ -87,10 +87,12 @@ namespace Solitaire.Presenters
         {
             if (cullGame)
             {
+                // Every layer except Interactable
                 _camera.cullingMask = ~(1 << _layerInteractable);
             }
             else
             {
+                // Everything
                 _camera.cullingMask = ~0;
             }
         }

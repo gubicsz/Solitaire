@@ -7,7 +7,7 @@ namespace Solitaire.Presenters
 {
     public class GamePopupPresenter : StateReactor<Game.Popup>
     {
-        [Inject] GamePopup _gamePopup;
+        [Inject] readonly GamePopup _gamePopup;
 
         Canvas _canvas;
 

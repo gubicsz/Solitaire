@@ -9,8 +9,8 @@ namespace Solitaire.Services
     {
         public IList<CardPresenter> Cards { get; private set; } = new List<CardPresenter>(52);
 
-        private IList<CardPresenter> _tempCopies;
-        private CardPresenter.Factory _factory;
+        private readonly IList<CardPresenter> _tempCopies;
+        private readonly CardPresenter.Factory _factory;
 
         public CardSpawner(CardPresenter.Factory factory)
         {

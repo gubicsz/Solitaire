@@ -67,7 +67,7 @@ namespace Solitaire.Models
 
         public Card TopCard()
         {
-            return HasCards ? Cards[Cards.Count - 1] : null;
+            return HasCards ? Cards[^1] : null;
         }
 
         public bool CanAddCard(Card card)

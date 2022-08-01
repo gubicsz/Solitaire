@@ -11,9 +11,9 @@ namespace Solitaire.Models
         public BoolReactiveProperty RestartNeeded { get; private set; } = new BoolReactiveProperty(false);
         public ReactiveCommand CloseCommand { get; private set; }
 
-        Game _game;
-        GameState _gameState;
-        GamePopup _gamePopup;
+        readonly Game _game;
+        readonly GameState _gameState;
+        readonly GamePopup _gamePopup;
 
         public Options(Game game, GameState gameState, GamePopup gamePopup, AudioService audioService)
         {

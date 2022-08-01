@@ -7,7 +7,7 @@ namespace Solitaire.Presenters
 {
     public abstract class OrientationAwarePresenter : MonoBehaviour
     {
-        [Inject] protected OrientationState _orientation;
+        [Inject] protected readonly OrientationState _orientation;
 
         protected virtual void Start()
         {

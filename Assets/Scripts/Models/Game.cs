@@ -51,19 +51,19 @@ namespace Solitaire.Models
         public IList<Pile> PileTableaus { get; private set; }
         public IList<Card> Cards { get; private set; }
 
-        [Inject] CardSpawner _cardSpawner;
-        [Inject] CommandService _commandService;
-        [Inject] MovesService _movesService;
-        [Inject] PointsService _pointsService;
-        [Inject] HintService _hintService;
-        [Inject] AudioService _audioService;
-        [Inject] Card.Config _cardConfig;
-        [Inject] GameState _gameState;
-        [Inject] GamePopup _gamePopup;
-        [Inject] Leaderboard _leaderboard;
-        [Inject] DrawCardCommand.Factory _drawCardCommandFactory;
-        [Inject] MoveCardCommand.Factory _moveCardCommandFactory;
-        [Inject] RefillStockCommand.Factory _refillStockCommandFactory;
+        [Inject] readonly CardSpawner _cardSpawner;
+        [Inject] readonly CommandService _commandService;
+        [Inject] readonly MovesService _movesService;
+        [Inject] readonly PointsService _pointsService;
+        [Inject] readonly HintService _hintService;
+        [Inject] readonly AudioService _audioService;
+        [Inject] readonly Card.Config _cardConfig;
+        [Inject] readonly GameState _gameState;
+        [Inject] readonly GamePopup _gamePopup;
+        [Inject] readonly Leaderboard _leaderboard;
+        [Inject] readonly DrawCardCommand.Factory _drawCardCommandFactory;
+        [Inject] readonly MoveCardCommand.Factory _moveCardCommandFactory;
+        [Inject] readonly RefillStockCommand.Factory _refillStockCommandFactory;
 
         public Game()
         {

@@ -8,13 +8,13 @@ namespace Solitaire.Commands
 {
     public class DrawCardCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool> 
     {
-        [Inject] AudioService _audioService;
-        [Inject] Options _options;
+        [Inject] readonly AudioService _audioService;
+        [Inject] readonly Options _options;
 
+        readonly List<Card> _cards = new List<Card>(3);
         Pile _pileStock;
         Pile _pileWaste;
         IMemoryPool _pool;
-        List<Card> _cards = new List<Card>(3);
 
         public void Execute()
         {

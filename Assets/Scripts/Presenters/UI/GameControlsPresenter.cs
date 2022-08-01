@@ -15,8 +15,8 @@ namespace Solitaire.Presenters
         [SerializeField] Button _buttonHint;
         [SerializeField] Button _buttonLeaderboard;
 
-        [Inject] GameControls _gameControls;
-        [Inject] GamePopup _gamePopup;
+        [Inject] readonly GameControls _gameControls;
+        [Inject] readonly GamePopup _gamePopup;
 
         RectTransform _rectOptions;
         RectTransform _rectHome;

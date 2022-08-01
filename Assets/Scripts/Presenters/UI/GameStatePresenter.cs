@@ -8,7 +8,7 @@ namespace Solitaire.Presenters
     [RequireComponent(typeof(Canvas))]
     public class GameStatePresenter : StateReactor<Game.State>
     {
-        [Inject] GameState _gameState;
+        [Inject] readonly GameState _gameState;
 
         Canvas _canvas;
 

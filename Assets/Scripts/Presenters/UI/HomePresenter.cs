@@ -18,9 +18,9 @@ namespace Solitaire.Presenters
         [SerializeField] RectTransform _rectSuitsLeft;
         [SerializeField] RectTransform _rectSuitsRight;
 
-        [Inject] Game _game;
-        [Inject] GamePopup _gamePopup;
-        [Inject] GameState _gameState;
+        [Inject] readonly Game _game;
+        [Inject] readonly GamePopup _gamePopup;
+        [Inject] readonly GameState _gameState;
 
         RectTransform _rectOptions;
         RectTransform _rectLeaderboard;

@@ -18,8 +18,8 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject] Pile _pile;
-        [Inject] Card _card;
+        [Inject] readonly Pile _pile;
+        [Inject] readonly Card _card;
 
         [Test]
         public void Should_InitCards_When_Created()
@@ -97,7 +97,7 @@ namespace Solitaire.Tests
             _pile.AddCard(_card);
             _pile.AddCard(new Card());
 
-            Card card = _pile.BottomCard();
+            var card = _pile.BottomCard();
 
             Assert.That(card == _card);
         }
@@ -105,7 +105,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ReturnNull_When_BottomCardIsRequestedAndHasNoCards()
         {
-            Card card = _pile.BottomCard();
+            var card = _pile.BottomCard();
 
             Assert.That(card == null);
         }
@@ -116,7 +116,7 @@ namespace Solitaire.Tests
             _pile.AddCard(new Card());
             _pile.AddCard(_card);
 
-            Card card = _pile.TopCard();
+            var card = _pile.TopCard();
 
             Assert.That(card == _card);
         }
@@ -124,7 +124,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ReturnNull_When_TopCardIsRequestedAndHasNoCards()
         {
-            Card card = _pile.TopCard();
+            var card = _pile.TopCard();
 
             Assert.That(card == null);
         }
@@ -158,17 +158,17 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ReturnTrue_When_TryingToAddATopCardOfTheSameSuitAndHigherTypeToAFoundationPile()
         {
-            Card card1 = new Card();
+            var card1 = new Card();
             card1.Init(Card.Suits.Spade, Card.Types.Ace);
 
-            Pile pileFoundation = new Pile();
+            var pileFoundation = new Pile();
             pileFoundation.Init(Pile.PileType.Foundation, Pile.CardArrangement.Stack, Vector3.zero);
             pileFoundation.AddCard(card1);
 
-            Card card2 = new Card();
+            var card2 = new Card();
             card2.Init(Card.Suits.Spade, Card.Types.Two);
 
-            Pile pileTableau = new Pile();
+            var pileTableau = new Pile();
             pileTableau.Init(Pile.PileType.Tableau, Pile.CardArrangement.Waterfall, Vector3.zero);
             pileTableau.AddCard(card2);
 
@@ -195,7 +195,7 @@ namespace Solitaire.Tests
         [TestCase(Card.Suits.Club, Card.Suits.Heart)]
         public void Should_ReturnTrue_When_TryingToAddACardOfTheOppositeColorAndLowerTypeToATableauPile(Card.Suits suitBlack, Card.Suits suitRed)
         {
-            Card card = new Card();
+            var card = new Card();
             card.Init(suitBlack, Card.Types.King);
 
             _pile.Init(Pile.PileType.Tableau, Pile.CardArrangement.Waterfall, Vector3.zero);
@@ -219,7 +219,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_RemoveCardFromOtherPile_When_AddingCard()
         {
-            Pile pile = new Pile();
+            var pile = new Pile();
             pile.AddCard(_card);
 
             _pile.AddCard(_card);
@@ -274,7 +274,7 @@ namespace Solitaire.Tests
 
             for (int i = 1; i <= 3; i++)
             {
-                Card card = _pile.Cards[^i];
+                var card = _pile.Cards[^i];
                 Assert.That(card.IsVisible.Value == i < 3);
                 Assert.That(card.IsInteractable.Value == i < 3);
             }
@@ -292,7 +292,7 @@ namespace Solitaire.Tests
 
             for (int i = 1; i <= 7; i++)
             {
-                Card card = _pile.Cards[^i];
+                var card = _pile.Cards[^i];
                 Assert.That(card.IsVisible.Value == i < 7);
                 Assert.That(card.IsInteractable.Value == i < 7);
             }
@@ -333,7 +333,7 @@ namespace Solitaire.Tests
 
             for (int i = 1; i <= 2; i++)
             {
-                Card card = _pile.Cards[^i];
+                var card = _pile.Cards[^i];
                 Assert.That(card.IsVisible.Value == true);
                 Assert.That(card.IsInteractable.Value == true);
             }
@@ -353,7 +353,7 @@ namespace Solitaire.Tests
 
             for (int i = 1; i <= 3; i++)
             {
-                Card card = _pile.Cards[^i];
+                var card = _pile.Cards[^i];
                 Assert.That(card.IsVisible.Value == true);
                 Assert.That(card.IsInteractable.Value == true);
             }
@@ -362,7 +362,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ContainTheCards_When_AddingThem()
         {
-            List<Card> cards = new List<Card>();
+            var cards = new List<Card>();
 
             for (int i = 0; i < 3; i++)
             {
@@ -378,7 +378,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_NotContainTheCards_When_RemovingThem()
         {
-            List<Card> cards = new List<Card>();
+            var cards = new List<Card>();
 
             for (int i = 0; i < 3; i++)
             {
@@ -397,7 +397,7 @@ namespace Solitaire.Tests
         public void Should_ReturnAllFollowingCards_When_SplittingAtACard()
         {
             int indexToSplitAt = 1;
-            List<Card> cards = new List<Card>();
+            var cards = new List<Card>();
 
             for (int i = 0; i < 3; i++)
             {
@@ -414,7 +414,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ChangePositionOfAllCards_When_UpdatingPosition()
         {
-            List<Card> cards = new List<Card>();
+            var cards = new List<Card>();
 
             for (int i = 0; i < 3; i++)
             {

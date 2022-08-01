@@ -15,7 +15,7 @@ namespace Solitaire.Presenters
         [SerializeField] TextMeshProUGUI _labelRestart;
         [SerializeField] RectTransform _panelRect;
 
-        [Inject] Options _options;
+        [Inject] readonly Options _options;
 
         protected override void Start()
         {
