@@ -4,13 +4,13 @@ using UniRx;
 
 namespace Solitaire.Services
 {
-    public class CommandService
+    public class CommandService : ICommandService
     {
         public BoolReactiveProperty CanUndo { get; private set; } = new BoolReactiveProperty();
 
-        readonly Stack<ICommand> _commands = new Stack<ICommand>();
+        readonly Stack<ICommand> _commands = new();
 
-        public void AddCommand(ICommand command)
+        public void Add(ICommand command)
         {
             if (command == null)
             {
@@ -21,7 +21,7 @@ namespace Solitaire.Services
             CanUndo.Value = _commands.Count > 0;
         }
 
-        public void UndoCommand()
+        public void Undo()
         {
             if (_commands.Count > 0)
             {

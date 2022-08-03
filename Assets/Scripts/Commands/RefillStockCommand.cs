@@ -7,8 +7,8 @@ namespace Solitaire.Commands
 {
     public class RefillStockCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool>
     {
-        [Inject] readonly PointsService _pointsService;
-        [Inject] readonly AudioService _audioService;
+        [Inject] readonly IPointsService _pointsService;
+        [Inject] readonly IAudioService _audioService;
         [Inject] readonly Game.Config _gameConfig;
         [Inject] readonly Options _options;
 

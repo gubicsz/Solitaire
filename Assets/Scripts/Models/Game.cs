@@ -51,12 +51,12 @@ namespace Solitaire.Models
         public IList<Pile> PileTableaus { get; private set; }
         public IList<Card> Cards { get; private set; }
 
-        [Inject] readonly CardSpawner _cardSpawner;
-        [Inject] readonly CommandService _commandService;
-        [Inject] readonly MovesService _movesService;
-        [Inject] readonly PointsService _pointsService;
-        [Inject] readonly HintService _hintService;
-        [Inject] readonly AudioService _audioService;
+        [Inject] readonly ICardSpawner _cardSpawner;
+        [Inject] readonly ICommandService _commandService;
+        [Inject] readonly IMovesService _movesService;
+        [Inject] readonly IPointsService _pointsService;
+        [Inject] readonly IHintService _hintService;
+        [Inject] readonly IAudioService _audioService;
         [Inject] readonly Card.Config _cardConfig;
         [Inject] readonly GameState _gameState;
         [Inject] readonly GamePopup _gamePopup;
@@ -102,7 +102,7 @@ namespace Solitaire.Models
             // Refill stock pile from waste pile
             var command = _refillStockCommandFactory.Create(PileStock, PileWaste);
             command.Execute();
-            _commandService.AddCommand(command);
+            _commandService.Add(command);
             _movesService.Increment();
         }
 
@@ -129,7 +129,7 @@ namespace Solitaire.Models
             // Move card to pile
             var command = _moveCardCommandFactory.Create(card, card.Pile, pile);
             command.Execute();
-            _commandService.AddCommand(command);
+            _commandService.Add(command);
             _movesService.Increment();
         }
 
@@ -138,7 +138,7 @@ namespace Solitaire.Models
             // Draw card(s) from stock
             var command = _drawCardCommandFactory.Create(PileStock, PileWaste);
             command.Execute();
-            _commandService.AddCommand(command);
+            _commandService.Add(command);
             _movesService.Increment();
         }
 

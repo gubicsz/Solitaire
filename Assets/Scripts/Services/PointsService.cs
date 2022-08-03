@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Solitaire.Services
 {
-    public class PointsService
+    public class PointsService : IPointsService
     {
         public IntReactiveProperty Points { get; private set; } = new IntReactiveProperty();
 

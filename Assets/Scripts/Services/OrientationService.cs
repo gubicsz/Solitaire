@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Solitaire.Services
 {
-    public class OrientationService : ITickable
+    public class OrientationService : ITickable, IOrientationService
     {
         readonly OrientationState _orientation;
 

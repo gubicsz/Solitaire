@@ -25,7 +25,7 @@ namespace Solitaire.Presenters
         [Inject] readonly Game _game;
         [Inject] readonly Card _card;
         [Inject] readonly Card.Config _config;
-        [Inject] readonly DragAndDropHandler _dndHandler;
+        [Inject] readonly IDragAndDropHandler _dndHandler;
 
         Tweener _tweenScale;
         Tweener _tweenMove;

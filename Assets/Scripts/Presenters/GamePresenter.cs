@@ -19,7 +19,7 @@ namespace Solitaire.Presenters
         [Inject] readonly Game _game;
         [Inject] readonly GameState _gameState;
         [Inject] readonly OrientationState _orientation;
-        [Inject] readonly AudioService _audioService;
+        [Inject] readonly IAudioService _audioService;
 
         Camera _camera;
         int _layerInteractable;

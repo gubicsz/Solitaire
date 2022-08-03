@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Solitaire.Services
 {
-    public class HintService
+    public class HintService : IHintService
     {
         readonly Game _game;
 

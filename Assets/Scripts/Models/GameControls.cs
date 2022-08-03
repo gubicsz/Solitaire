@@ -12,7 +12,7 @@ namespace Solitaire.Models
         public ReactiveCommand UndoCommand { get; private set; }
         public AsyncReactiveCommand HintCommand { get; private set; }
 
-        public GameControls(Game game, GameState gameState, CommandService commandService, MovesService movesService)
+        public GameControls(Game game, GameState gameState, ICommandService commandService, IMovesService movesService)
         {
             IObservable<bool> isPlayingSource = gameState.State.Select(s => s == Game.State.Playing);
 
@@ -22,7 +22,7 @@ namespace Solitaire.Models
             UndoCommand = new ReactiveCommand(isPlayingSource.CombineLatest(commandService.CanUndo, (isPlaying, canUndo) => isPlaying && canUndo));
             UndoCommand.Subscribe(_ =>
             {
-                commandService.UndoCommand();
+                commandService.Undo();
                 movesService.Increment();
             }).AddTo(this);
             

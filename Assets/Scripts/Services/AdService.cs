@@ -3,7 +3,7 @@ using Zenject;
 
 namespace Solitaire.Services
 {
-    public class AdService : IInitializable, IUnityAdsInitializationListener
+    public class AdService : IInitializable, IUnityAdsInitializationListener, IAdService
     {
 #if UNITY_ANDROID
         string _gameId = "4848282";

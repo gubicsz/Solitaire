@@ -7,8 +7,8 @@ namespace Solitaire.Commands
 {
     public class MoveCardCommand : ICommand, IDisposable, IPoolable<Card, Pile, Pile, IMemoryPool>
     {
-        [Inject] readonly AudioService _audioService;
-        [Inject] readonly PointsService _pointsService;
+        [Inject] readonly IAudioService _audioService;
+        [Inject] readonly IPointsService _pointsService;
         [Inject] readonly Game.Config _gameConfig;
 
         Card _card;

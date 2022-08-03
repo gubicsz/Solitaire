@@ -15,7 +15,7 @@ namespace Solitaire.Models
         readonly GameState _gameState;
         readonly GamePopup _gamePopup;
 
-        public Options(Game game, GameState gameState, GamePopup gamePopup, AudioService audioService)
+        public Options(Game game, GameState gameState, GamePopup gamePopup, IAudioService audioService)
         {
             _game = game;
             _gameState = gameState;

@@ -10,7 +10,7 @@ namespace Solitaire.Helpers
     [RequireComponent(typeof(Selectable))]
     public class InteractableSfx : MonoBehaviour, IPointerUpHandler
     {
-        [Inject] readonly AudioService _audioService;
+        [Inject] readonly IAudioService _audioService;
 
         Selectable _selectable;
 

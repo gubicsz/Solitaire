@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Solitaire.Services
 {
-    public class AudioService
+    public class AudioService : IAudioService
     {
         readonly Dictionary<string, AudioClip> _audioMap;
         readonly Audio.Config _audioConfig;

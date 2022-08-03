@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Solitaire.Services
 {
-    public class DragAndDropHandler
+    public class DragAndDropHandler : IDragAndDropHandler
     {
         readonly Camera _camera;
         IList<Card> _draggedCards;

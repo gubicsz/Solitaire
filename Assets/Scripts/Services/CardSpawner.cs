@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Solitaire.Services
 {
-    public class CardSpawner
+    public class CardSpawner : ICardSpawner
     {
         public IList<CardPresenter> Cards { get; private set; } = new List<CardPresenter>(52);
 

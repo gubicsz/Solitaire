@@ -16,7 +16,7 @@ namespace Solitaire.Presenters
 
         [Inject] readonly Pile _pile;
         [Inject] readonly Game _game;
-        [Inject] readonly DragAndDropHandler _dndHandler;
+        [Inject] readonly IDragAndDropHandler _dndHandler;
         [Inject] readonly OrientationState _orientation;
 
         public Pile Pile => _pile;

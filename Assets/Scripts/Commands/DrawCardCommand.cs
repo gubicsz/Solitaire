@@ -8,7 +8,7 @@ namespace Solitaire.Commands
 {
     public class DrawCardCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool> 
     {
-        [Inject] readonly AudioService _audioService;
+        [Inject] readonly IAudioService _audioService;
         [Inject] readonly Options _options;
 
         readonly List<Card> _cards = new List<Card>(3);
