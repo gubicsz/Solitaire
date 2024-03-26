@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using NSubstitute;
 using NUnit.Framework;
 using Solitaire.Models;
 using Solitaire.Services;
-using System;
-using System.Collections.Generic;
 using Zenject;
 
 namespace Solitaire.Tests
@@ -21,20 +21,40 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject] readonly Leaderboard _leaderboard;
-        [Inject] readonly GameState _gameState;
-        [Inject] readonly GamePopup _gamePopup;
-        [Inject] readonly IStorageService _storageService;
+        [Inject]
+        readonly Leaderboard _leaderboard;
 
-        readonly Leaderboard.Data _testLeaderboard = new()
-        {
-            Items = new List<Leaderboard.Item>()
+        [Inject]
+        readonly GameState _gameState;
+
+        [Inject]
+        readonly GamePopup _gamePopup;
+
+        [Inject]
+        readonly IStorageService _storageService;
+
+        readonly Leaderboard.Data _testLeaderboard =
+            new()
             {
-                new Leaderboard.Item() { Points = 1230, Date = DateTime.Now.AddDays(-2).ToString("HH:mm, MM/dd/yyyy") },
-                new Leaderboard.Item() { Points = 150, Date = DateTime.Now.AddDays(-1).ToString("HH:mm, MM/dd/yyyy") },
-                new Leaderboard.Item() { Points = 90, Date = DateTime.Now.ToString("HH:mm, MM/dd/yyyy") },
-            }
-        };
+                Items = new List<Leaderboard.Item>()
+                {
+                    new Leaderboard.Item()
+                    {
+                        Points = 1230,
+                        Date = DateTime.Now.AddDays(-2).ToString("HH:mm, MM/dd/yyyy")
+                    },
+                    new Leaderboard.Item()
+                    {
+                        Points = 150,
+                        Date = DateTime.Now.AddDays(-1).ToString("HH:mm, MM/dd/yyyy")
+                    },
+                    new Leaderboard.Item()
+                    {
+                        Points = 90,
+                        Date = DateTime.Now.ToString("HH:mm, MM/dd/yyyy")
+                    },
+                }
+            };
 
         [Test]
         public void Should_InitializeItems_When_Created()
@@ -95,9 +115,18 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ReturnCorrectValue_When_ComparingTwoItems()
         {
-            int firstBiggerThanSecond = _leaderboard.Compare(_testLeaderboard.Items[0], _testLeaderboard.Items[1]);
-            int firstSmallerThanSecond = _leaderboard.Compare(_testLeaderboard.Items[1], _testLeaderboard.Items[0]);
-            int firstEqualsSecond = _leaderboard.Compare(_testLeaderboard.Items[0], _testLeaderboard.Items[0]);
+            int firstBiggerThanSecond = _leaderboard.Compare(
+                _testLeaderboard.Items[0],
+                _testLeaderboard.Items[1]
+            );
+            int firstSmallerThanSecond = _leaderboard.Compare(
+                _testLeaderboard.Items[1],
+                _testLeaderboard.Items[0]
+            );
+            int firstEqualsSecond = _leaderboard.Compare(
+                _testLeaderboard.Items[0],
+                _testLeaderboard.Items[0]
+            );
 
             Assert.That(firstBiggerThanSecond == 1);
             Assert.That(firstSmallerThanSecond == -1);
@@ -124,7 +153,9 @@ namespace Solitaire.Tests
         public void Should_NotUpdateItems_When_LoadingNullData()
         {
             int count = _leaderboard.Items.Count;
-            _storageService.Load<Leaderboard.Data>(Arg.Any<string>()).Returns(default(Leaderboard.Data));
+            _storageService
+                .Load<Leaderboard.Data>(Arg.Any<string>())
+                .Returns(default(Leaderboard.Data));
 
             _leaderboard.Load();
 

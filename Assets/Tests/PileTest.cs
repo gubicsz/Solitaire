@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using Solitaire.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using Solitaire.Models;
 using UnityEngine;
 using Zenject;
 
@@ -18,8 +18,11 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject] readonly Pile _pile;
-        [Inject] readonly Card _card;
+        [Inject]
+        readonly Pile _pile;
+
+        [Inject]
+        readonly Card _card;
 
         [Test]
         public void Should_InitCards_When_Created()
@@ -134,7 +137,9 @@ namespace Solitaire.Tests
         [TestCase(Pile.PileType.Waste)]
         [TestCase(Pile.PileType.Foundation)]
         [TestCase(Pile.PileType.Tableau)]
-        public void Should_ReturnFalse_When_TryingToAddCardToTheWrongPileOrConditionsAreNotMet(Pile.PileType type)
+        public void Should_ReturnFalse_When_TryingToAddCardToTheWrongPileOrConditionsAreNotMet(
+            Pile.PileType type
+        )
         {
             _card.Init(Card.Suits.Spade, Card.Types.Two);
             _pile.Init(type, Pile.CardArrangement.Stack, Vector3.zero);
@@ -193,7 +198,10 @@ namespace Solitaire.Tests
         [TestCase(Card.Suits.Spade, Card.Suits.Heart)]
         [TestCase(Card.Suits.Club, Card.Suits.Diamond)]
         [TestCase(Card.Suits.Club, Card.Suits.Heart)]
-        public void Should_ReturnTrue_When_TryingToAddACardOfTheOppositeColorAndLowerTypeToATableauPile(Card.Suits suitBlack, Card.Suits suitRed)
+        public void Should_ReturnTrue_When_TryingToAddACardOfTheOppositeColorAndLowerTypeToATableauPile(
+            Card.Suits suitBlack,
+            Card.Suits suitRed
+        )
         {
             var card = new Card();
             card.Init(suitBlack, Card.Types.King);

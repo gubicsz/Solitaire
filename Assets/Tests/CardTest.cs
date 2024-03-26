@@ -16,8 +16,11 @@ namespace Solitaire.Tests
             Container.Inject(this);
         }
 
-        [Inject] readonly Card _card;
-        [Inject] readonly Pile _pile;
+        [Inject]
+        private readonly Card _card;
+
+        [Inject]
+        private readonly Pile _pile;
 
         [Test]
         public void Should_InitReactiveProperties_When_Created()
@@ -91,8 +94,8 @@ namespace Solitaire.Tests
         [Test]
         public void Should_SetSuitAndType_When_Initialized()
         {
-            Card.Suits suit = Card.Suits.Spade;
-            Card.Types type = Card.Types.Ace;
+            var suit = Card.Suits.Spade;
+            var type = Card.Types.Ace;
 
             _card.Init(suit, type);
 
@@ -103,7 +106,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_SetDefaultValues_When_Reseted()
         {
-            Vector3 position = Vector3.zero;
+            var position = Vector3.zero;
 
             _card.Reset(position);
 
@@ -112,8 +115,8 @@ namespace Solitaire.Tests
             Assert.That(_card.Position.Value == position);
             Assert.That(_card.Order.Value == 0);
             Assert.That(_card.Alpha.Value == 1f);
-            Assert.That(_card.IsVisible.Value == true);
-            Assert.That(_card.IsInteractable.Value == true);
+            Assert.That(_card.IsVisible.Value);
+            Assert.That(_card.IsInteractable.Value);
             Assert.That(_card.DragOrigin == Vector3.zero);
             Assert.That(_card.DragOffset == Vector3.zero);
             Assert.That(_card.OrderToRestore == 0);
@@ -123,8 +126,8 @@ namespace Solitaire.Tests
         [Test]
         public void Should_NotChangeSuitAndType_When_Reseted()
         {
-            Card.Suits suit = Card.Suits.Spade;
-            Card.Types type = Card.Types.Ace;
+            var suit = Card.Suits.Spade;
+            var type = Card.Types.Ace;
 
             _card.Init(suit, type);
             _card.Reset(Vector3.zero);
@@ -136,7 +139,7 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ChangeFacing_When_Flipped()
         {
-            bool isFaceUp = _card.IsFaceUp.Value;
+            var isFaceUp = _card.IsFaceUp.Value;
 
             _card.Flip();
 
@@ -146,9 +149,9 @@ namespace Solitaire.Tests
         [Test]
         public void Should_ReturnCorrectString_When_SuitAndTypeAreSet()
         {
-            string expected = $"{_card.Suit} {_card.Type}";
+            var expected = $"{_card.Suit} {_card.Type}";
 
-            string result = _card.ToString();
+            var result = _card.ToString();
 
             Assert.That(result == expected);
         }
@@ -171,7 +174,7 @@ namespace Solitaire.Tests
         {
             _card.Init(Card.Suits.Spade, type);
 
-            int value = _card.GetValue();
+            var value = _card.GetValue();
 
             Assert.That(value == expected);
         }
