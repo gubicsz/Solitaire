@@ -8,12 +8,10 @@ namespace Solitaire.Services
         {
             // Handle error
             if (string.IsNullOrEmpty(key) || obj == null)
-            {
                 return;
-            }
 
             // Serialize object to json
-            string json = JsonUtility.ToJson(obj);
+            var json = JsonUtility.ToJson(obj);
 
             // Save to player prefs
             PlayerPrefs.SetString(key, json);
@@ -24,12 +22,10 @@ namespace Solitaire.Services
         {
             // Handle error
             if (string.IsNullOrEmpty(key))
-            {
                 return default;
-            }
 
             // Load json from player prefs
-            string json = PlayerPrefs.GetString(key);
+            var json = PlayerPrefs.GetString(key);
 
             // Deserialize object from json
             return JsonUtility.FromJson<T>(json);

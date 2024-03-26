@@ -1,5 +1,5 @@
-﻿using Solitaire.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Solitaire.Models;
 
 namespace Solitaire.Services
 {

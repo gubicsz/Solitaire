@@ -7,9 +7,14 @@ namespace Solitaire.Installers
     [CreateAssetMenu(fileName = "GameConfigInstaller", menuName = "Installers/GameConfigInstaller")]
     public class GameConfigInstaller : ScriptableObjectInstaller<GameConfigInstaller>
     {
-        [SerializeField] Game.Config _game;
-        [SerializeField] Card.Config _card;
-        [SerializeField] Audio.Config _audio;
+        [SerializeField]
+        private Game.Config _game;
+
+        [SerializeField]
+        private Card.Config _card;
+
+        [SerializeField]
+        private Audio.Config _audio;
 
         public override void InstallBindings()
         {

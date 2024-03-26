@@ -10,9 +10,10 @@ namespace Solitaire.Helpers
     [RequireComponent(typeof(Selectable))]
     public class InteractableSfx : MonoBehaviour, IPointerUpHandler
     {
-        [Inject] readonly IAudioService _audioService;
+        [Inject]
+        private readonly IAudioService _audioService;
 
-        Selectable _selectable;
+        private Selectable _selectable;
 
         private void Awake()
         {
@@ -22,9 +23,7 @@ namespace Solitaire.Helpers
         public void OnPointerUp(PointerEventData eventData)
         {
             if (_selectable.IsInteractable())
-            {
                 _audioService.PlaySfx(Audio.SfxClick, 1.0f);
-            }
         }
     }
 }

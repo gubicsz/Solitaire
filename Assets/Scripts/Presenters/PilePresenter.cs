@@ -9,24 +9,38 @@ namespace Solitaire.Presenters
 {
     public class PilePresenter : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
-        [SerializeField] Pile.PileType Type;
-        [SerializeField] Pile.CardArrangement Arrangement;
-        [SerializeField] Vector3 PosPortrait;
-        [SerializeField] Vector3 PosLandscape;
+        [SerializeField]
+        private Pile.PileType Type;
 
-        [Inject] readonly Pile _pile;
-        [Inject] readonly Game _game;
-        [Inject] readonly IDragAndDropHandler _dndHandler;
-        [Inject] readonly OrientationState _orientation;
+        [SerializeField]
+        private Pile.CardArrangement Arrangement;
+
+        [SerializeField]
+        private Vector3 PosPortrait;
+
+        [SerializeField]
+        private Vector3 PosLandscape;
+
+        [Inject]
+        private readonly IDragAndDropHandler _dndHandler;
+
+        [Inject]
+        private readonly Game _game;
+
+        [Inject]
+        private readonly OrientationState _orientation;
+
+        [Inject]
+        private readonly Pile _pile;
 
         public Pile Pile => _pile;
 
-        void Awake()
+        private void Awake()
         {
             _pile.Init(Type, Arrangement, transform.position);
         }
 
-        void Start()
+        private void Start()
         {
             // Update layout on orientation change
             _orientation.State.Subscribe(UpdateLayout).AddTo(this);
@@ -35,12 +49,12 @@ namespace Solitaire.Presenters
         public void OnDrop(PointerEventData eventData)
         {
             if (eventData == null || eventData.pointerDrag == null)
-            {
                 return;
-            }
 
-            if (eventData.pointerDrag.TryGetComponent(out CardPresenter cardPresenter) &&
-                _pile.CanAddCard(cardPresenter.Card))
+            if (
+                eventData.pointerDrag.TryGetComponent(out CardPresenter cardPresenter)
+                && _pile.CanAddCard(cardPresenter.Card)
+            )
             {
                 _dndHandler.Drop();
                 _game.MoveCard(cardPresenter.Card, _pile);
@@ -54,15 +68,12 @@ namespace Solitaire.Presenters
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData?.clickCount == 1 && _pile.IsStock)
-            {
                 _game.RefillStock();
-            }
         }
 
         private void UpdateLayout(Orientation orientation)
         {
-            Vector3 position = orientation == Orientation.Landscape ?
-                PosLandscape : PosPortrait;
+            var position = orientation == Orientation.Landscape ? PosLandscape : PosPortrait;
 
             transform.position = position;
             _pile.UpdatePosition(position);

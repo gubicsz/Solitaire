@@ -6,7 +6,8 @@ namespace Solitaire.Presenters
 {
     public class OrientationStatePresenter : StateReactor<Orientation>
     {
-        [Inject] readonly OrientationState _orientationState;
+        [Inject]
+        private readonly OrientationState _orientationState;
 
         protected override StateModel<Orientation> Model => _orientationState;
 

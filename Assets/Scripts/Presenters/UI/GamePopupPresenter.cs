@@ -7,16 +7,16 @@ namespace Solitaire.Presenters
 {
     public class GamePopupPresenter : StateReactor<Game.Popup>
     {
-        [Inject] readonly GamePopup _gamePopup;
+        [Inject] private readonly GamePopup _gamePopup;
 
-        Canvas _canvas;
+        private Canvas _canvas;
+
+        protected override StateModel<Game.Popup> Model => _gamePopup;
 
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
         }
-
-        protected override StateModel<Game.Popup> Model => _gamePopup;
 
         protected override void SetVisibility(bool isVisible)
         {

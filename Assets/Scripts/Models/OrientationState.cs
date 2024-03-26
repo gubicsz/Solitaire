@@ -6,13 +6,12 @@ namespace Solitaire.Models
     {
         Unknown,
         Portrait,
-        Landscape,
+        Landscape
     }
 
     public class OrientationState : StateModel<Orientation>
     {
-        public OrientationState() : base(Orientation.Unknown)
-        {
-        }
+        public OrientationState()
+            : base(Orientation.Unknown) { }
     }
 }

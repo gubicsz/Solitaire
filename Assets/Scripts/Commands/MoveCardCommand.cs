@@ -1,20 +1,25 @@
+using System;
 using Solitaire.Models;
 using Solitaire.Services;
-using System;
 using Zenject;
 
 namespace Solitaire.Commands
 {
     public class MoveCardCommand : ICommand, IDisposable, IPoolable<Card, Pile, Pile, IMemoryPool>
     {
-        [Inject] readonly IAudioService _audioService;
-        [Inject] readonly IPointsService _pointsService;
-        [Inject] readonly Game.Config _gameConfig;
+        [Inject]
+        private readonly IAudioService _audioService;
 
-        Card _card;
-        Pile _pileSource;
-        Pile _pileTarget;
-        IMemoryPool _pool;
+        [Inject]
+        private readonly Game.Config _gameConfig;
+
+        [Inject]
+        private readonly IPointsService _pointsService;
+
+        private Card _card;
+        private Pile _pileSource;
+        private Pile _pileTarget;
+        private IMemoryPool _pool;
 
         private bool _wasTopCardFlipped;
 
@@ -37,13 +42,9 @@ namespace Solitaire.Commands
             if (_pileSource.IsWaste)
             {
                 if (_pileTarget.IsTableau)
-                {
                     _pointsService.Add(_gameConfig.PointsWasteToTableau);
-                }
                 else if (_pileTarget.IsFoundation)
-                {
                     _pointsService.Add(_gameConfig.PointsWasteToFoundation);
-                }
             }
             else if (_pileSource.IsTableau && _pileTarget.IsFoundation)
             {
@@ -57,10 +58,9 @@ namespace Solitaire.Commands
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
 
             // Reveal card below if needed
-            Card cardBelow = _pileSource.TopCard();
+            var cardBelow = _pileSource.TopCard();
 
-            if (_pileSource.IsTableau &&
-                cardBelow != null && !cardBelow.IsFaceUp.Value)
+            if (_pileSource.IsTableau && cardBelow != null && !cardBelow.IsFaceUp.Value)
             {
                 cardBelow.Flip();
                 _wasTopCardFlipped = true;
@@ -71,10 +71,14 @@ namespace Solitaire.Commands
         public void Undo()
         {
             // Hide top card of the source tableau pile
-            Card cardTop = _pileSource.TopCard();
+            var cardTop = _pileSource.TopCard();
 
-            if (_pileSource.IsTableau && _wasTopCardFlipped &&
-                cardTop != null && cardTop.IsFaceUp.Value)
+            if (
+                _pileSource.IsTableau
+                && _wasTopCardFlipped
+                && cardTop != null
+                && cardTop.IsFaceUp.Value
+            )
             {
                 cardTop.Flip();
                 _pointsService.Add(-_gameConfig.PointsTurnOverTableauCard);
@@ -84,13 +88,9 @@ namespace Solitaire.Commands
             if (_pileSource.IsWaste)
             {
                 if (_pileTarget.IsTableau)
-                {
                     _pointsService.Add(-_gameConfig.PointsWasteToTableau);
-                }
                 else if (_pileTarget.IsFoundation)
-                {
                     _pointsService.Add(-_gameConfig.PointsWasteToFoundation);
-                }
             }
             else if (_pileSource.IsTableau && _pileTarget.IsFoundation)
             {
@@ -139,8 +139,6 @@ namespace Solitaire.Commands
             _wasTopCardFlipped = false;
         }
 
-        public class Factory : PlaceholderFactory<Card, Pile, Pile, MoveCardCommand>
-        {
-        }
+        public class Factory : PlaceholderFactory<Card, Pile, Pile, MoveCardCommand> { }
     }
 }

@@ -6,10 +6,11 @@ namespace Solitaire.Helpers
     [RequireComponent(typeof(Selectable))]
     public class InteractableColor : MonoBehaviour
     {
-        [SerializeField] Image _image;
+        [SerializeField]
+        private Image _image;
+        private bool _isNormal = true;
 
-        Selectable _selectable;
-        bool _isNormal = true;
+        private Selectable _selectable;
 
         private void Awake()
         {
@@ -18,7 +19,7 @@ namespace Solitaire.Helpers
 
         private void Update()
         {
-            bool isInteractable = _selectable.IsInteractable();
+            var isInteractable = _selectable.IsInteractable();
 
             if (isInteractable && !_isNormal)
             {
@@ -34,7 +35,7 @@ namespace Solitaire.Helpers
 
         private void ChangeAlpha(float alpha)
         {
-            Color color = _image.color;
+            var color = _image.color;
             color.a = alpha;
             _image.color = color;
         }

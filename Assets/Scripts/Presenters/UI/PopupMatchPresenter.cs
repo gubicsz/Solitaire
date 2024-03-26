@@ -1,23 +1,31 @@
 using Solitaire.Models;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using UniRx;
 using Zenject;
 
 namespace Solitaire.Presenters
 {
     public class PopupMatchPresenter : OrientationAwarePresenter
     {
-        [SerializeField] Button _buttonRestart;
-        [SerializeField] Button _buttonNewMatch;
-        [SerializeField] Button _buttonContinue;
-        [SerializeField] RectTransform _panelRect;
+        [SerializeField]
+        private Button _buttonRestart;
 
-        [Inject] readonly Game _game;
+        [SerializeField]
+        private Button _buttonNewMatch;
 
-        RectTransform _rectRestart;
-        RectTransform _rectNewMatch;
-        RectTransform _rectContinue;
+        [SerializeField]
+        private Button _buttonContinue;
+
+        [SerializeField]
+        private RectTransform _panelRect;
+
+        [Inject]
+        private readonly Game _game;
+        private RectTransform _rectContinue;
+        private RectTransform _rectNewMatch;
+
+        private RectTransform _rectRestart;
 
         private void Awake()
         {
@@ -41,14 +49,23 @@ namespace Solitaire.Presenters
             _panelRect.offsetMin = isLandscape ? new Vector2(250, 200) : new Vector2(150, 250);
             _panelRect.offsetMax = isLandscape ? new Vector2(-250, -200) : new Vector2(-150, -250);
 
-            Vector2 size = _rectRestart.sizeDelta;
+            var size = _rectRestart.sizeDelta;
             size.y = isLandscape ? 70 : 140;
             _rectRestart.sizeDelta = size;
-            _rectRestart.anchoredPosition = new Vector2(_rectRestart.anchoredPosition.x, isLandscape ? 60 : 130);
+            _rectRestart.anchoredPosition = new Vector2(
+                _rectRestart.anchoredPosition.x,
+                isLandscape ? 60 : 130
+            );
             _rectNewMatch.sizeDelta = size;
-            _rectNewMatch.anchoredPosition = new Vector2(_rectNewMatch.anchoredPosition.x, isLandscape ? -40 : -40);
+            _rectNewMatch.anchoredPosition = new Vector2(
+                _rectNewMatch.anchoredPosition.x,
+                isLandscape ? -40 : -40
+            );
             _rectContinue.sizeDelta = size;
-            _rectContinue.anchoredPosition = new Vector2(_rectContinue.anchoredPosition.x, isLandscape ? -140 : -210);
+            _rectContinue.anchoredPosition = new Vector2(
+                _rectContinue.anchoredPosition.x,
+                isLandscape ? -140 : -210
+            );
         }
     }
 }

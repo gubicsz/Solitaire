@@ -1,21 +1,28 @@
+using System;
 using Solitaire.Models;
 using Solitaire.Services;
-using System;
 using Zenject;
 
 namespace Solitaire.Commands
 {
     public class RefillStockCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool>
     {
-        [Inject] readonly IPointsService _pointsService;
-        [Inject] readonly IAudioService _audioService;
-        [Inject] readonly Game.Config _gameConfig;
-        [Inject] readonly Options _options;
+        [Inject]
+        private readonly IAudioService _audioService;
 
-        Pile _pileStock;
-        Pile _pileWaste;
-        IMemoryPool _pool;
-        int _points;
+        [Inject]
+        private readonly Game.Config _gameConfig;
+
+        [Inject]
+        private readonly Options _options;
+
+        [Inject]
+        private readonly IPointsService _pointsService;
+
+        private Pile _pileStock;
+        private Pile _pileWaste;
+        private int _points;
+        private IMemoryPool _pool;
 
         public void Execute()
         {
@@ -47,9 +54,7 @@ namespace Solitaire.Commands
             }
 
             if (!_options.DrawThree.Value)
-            {
                 _pointsService.Set(_points);
-            }
 
             _audioService.PlaySfx(Audio.SfxDraw, 0.5f);
         }
@@ -74,8 +79,6 @@ namespace Solitaire.Commands
             _points = 0;
         }
 
-        public class Factory : PlaceholderFactory<Pile, Pile, RefillStockCommand>
-        {
-        }
+        public class Factory : PlaceholderFactory<Pile, Pile, RefillStockCommand> { }
     }
 }

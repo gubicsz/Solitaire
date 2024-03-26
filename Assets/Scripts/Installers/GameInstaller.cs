@@ -10,7 +10,8 @@ namespace Solitaire.Installers
 {
     public class GameInstaller : MonoInstaller
     {
-        [SerializeField] GameObject _cardPrefab;
+        [SerializeField]
+        private GameObject _cardPrefab;
 
         private void Awake()
         {
@@ -29,7 +30,7 @@ namespace Solitaire.Installers
             InstallCommands();
         }
 
-        void InstallServices()
+        private void InstallServices()
         {
             Container.BindInterfacesAndSelfTo<CommandService>().AsSingle();
             Container.BindInterfacesAndSelfTo<DragAndDropHandler>().AsSingle();
@@ -42,7 +43,7 @@ namespace Solitaire.Installers
             Container.BindInterfacesAndSelfTo<StorageService>().AsSingle();
         }
 
-        void InstallGame()
+        private void InstallGame()
         {
             Container.Bind<Game>().AsSingle();
             Container.Bind<GameState>().AsSingle();
@@ -53,28 +54,34 @@ namespace Solitaire.Installers
             Container.Bind<Leaderboard>().AsSingle();
         }
 
-        void InstallPiles()
+        private void InstallPiles()
         {
             Container.Bind<Pile>().AsTransient();
         }
 
-        void InstallCards()
+        private void InstallCards()
         {
             Container.Bind<Card>().AsTransient();
             Container.BindInterfacesAndSelfTo<CardSpawner>().AsSingle();
-            Container.BindFactory<Card.Suits, Card.Types, CardPresenter, CardPresenter.Factory>()
-                .FromMonoPoolableMemoryPool(x => x.WithInitialSize(52)
-                .FromComponentInNewPrefab(_cardPrefab)
-                .UnderTransformGroup("CardPool"));
+            Container
+                .BindFactory<Card.Suits, Card.Types, CardPresenter, CardPresenter.Factory>()
+                .FromMonoPoolableMemoryPool(x =>
+                    x.WithInitialSize(52)
+                        .FromComponentInNewPrefab(_cardPrefab)
+                        .UnderTransformGroup("CardPool")
+                );
         }
 
-        void InstallCommands()
+        private void InstallCommands()
         {
-            Container.BindFactory<Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
+            Container
+                .BindFactory<Pile, Pile, DrawCardCommand, DrawCardCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(256).ExpandByDoubling());
-            Container.BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
+            Container
+                .BindFactory<Card, Pile, Pile, MoveCardCommand, MoveCardCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(256).ExpandByDoubling());
-            Container.BindFactory<Pile, Pile, RefillStockCommand, RefillStockCommand.Factory>()
+            Container
+                .BindFactory<Pile, Pile, RefillStockCommand, RefillStockCommand.Factory>()
                 .FromPoolableMemoryPool(x => x.WithInitialSize(16).ExpandByDoubling());
         }
     }

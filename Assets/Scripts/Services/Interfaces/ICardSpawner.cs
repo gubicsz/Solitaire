@@ -1,6 +1,6 @@
-﻿using Solitaire.Models;
+﻿using System.Collections.Generic;
+using Solitaire.Models;
 using Solitaire.Presenters;
-using System.Collections.Generic;
 
 namespace Solitaire.Services
 {

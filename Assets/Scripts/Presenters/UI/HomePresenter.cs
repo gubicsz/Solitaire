@@ -9,25 +9,45 @@ namespace Solitaire.Presenters
 {
     public class HomePresenter : OrientationAwarePresenter
     {
-        [SerializeField] Button _buttonNewMatch;
-        [SerializeField] Button _buttonContinue;
-        [SerializeField] Button _buttonOptions;
-        [SerializeField] Button _buttonLeaderboard;
-        [SerializeField] RectTransform _rectCards;
-        [SerializeField] RectTransform _rectSuitsCenter;
-        [SerializeField] RectTransform _rectSuitsLeft;
-        [SerializeField] RectTransform _rectSuitsRight;
+        [SerializeField]
+        private Button _buttonNewMatch;
 
-        [Inject] readonly Game _game;
-        [Inject] readonly GamePopup _gamePopup;
-        [Inject] readonly GameState _gameState;
+        [SerializeField]
+        private Button _buttonContinue;
 
-        RectTransform _rectOptions;
-        RectTransform _rectLeaderboard;
-        Sequence _sequenceCards;
-        Sequence _sequenceSuitsCenter;
-        Sequence _sequenceSuitsLeft;
-        Sequence _sequenceSuitsRight;
+        [SerializeField]
+        private Button _buttonOptions;
+
+        [SerializeField]
+        private Button _buttonLeaderboard;
+
+        [SerializeField]
+        private RectTransform _rectCards;
+
+        [SerializeField]
+        private RectTransform _rectSuitsCenter;
+
+        [SerializeField]
+        private RectTransform _rectSuitsLeft;
+
+        [SerializeField]
+        private RectTransform _rectSuitsRight;
+
+        [Inject]
+        private readonly Game _game;
+
+        [Inject]
+        private readonly GamePopup _gamePopup;
+
+        [Inject]
+        private readonly GameState _gameState;
+        private RectTransform _rectLeaderboard;
+
+        private RectTransform _rectOptions;
+        private Sequence _sequenceCards;
+        private Sequence _sequenceSuitsCenter;
+        private Sequence _sequenceSuitsLeft;
+        private Sequence _sequenceSuitsRight;
 
         private void Awake()
         {
@@ -45,8 +65,12 @@ namespace Solitaire.Presenters
             _gamePopup.LeaderboardCommand.BindTo(_buttonLeaderboard).AddTo(this);
 
             // Play animation sequence on state change
-            _gameState.State.Where(state => state == Game.State.Home).Subscribe(_ => 
-                PlayAnimationSequence(_orientation.State.Value == Orientation.Landscape)).AddTo(this);
+            _gameState
+                .State.Where(state => state == Game.State.Home)
+                .Subscribe(_ =>
+                    PlayAnimationSequence(_orientation.State.Value == Orientation.Landscape)
+                )
+                .AddTo(this);
         }
 
         protected override void OnOrientationChanged(bool isLandscape)
@@ -55,11 +79,18 @@ namespace Solitaire.Presenters
 
             if (isLandscape)
             {
-                _rectOptions.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 50, _rectOptions.sizeDelta.x);
-                _rectLeaderboard.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 50, _rectLeaderboard.sizeDelta.x);
+                _rectOptions.SetInsetAndSizeFromParentEdge(
+                    RectTransform.Edge.Left,
+                    50,
+                    _rectOptions.sizeDelta.x
+                );
+                _rectLeaderboard.SetInsetAndSizeFromParentEdge(
+                    RectTransform.Edge.Right,
+                    50,
+                    _rectLeaderboard.sizeDelta.x
+                );
             }
             else
-
             {
                 _rectOptions.anchorMin = new Vector2(0.5f, 0f);
                 _rectOptions.anchorMax = new Vector2(0.5f, 0f);
@@ -95,13 +126,16 @@ namespace Solitaire.Presenters
                 sequence = DOTween.Sequence();
                 sequence.SetAutoKill(false);
 
-                for (int i = 1; i < _rectCards.childCount; i++)
+                for (var i = 1; i < _rectCards.childCount; i++)
                 {
-                    Transform rect = _rectCards.GetChild(i);
+                    var rect = _rectCards.GetChild(i);
                     rect.localEulerAngles = new Vector3(0f, 0f, 37.5f);
 
-                    Tweener tween = rect
-                        .DOLocalRotate(new Vector3(0f, 0f, -i * 25f), i * 0.3333f, RotateMode.LocalAxisAdd)
+                    Tweener tween = rect.DOLocalRotate(
+                            new Vector3(0f, 0f, -i * 25f),
+                            i * 0.3333f,
+                            RotateMode.LocalAxisAdd
+                        )
                         .SetEase(Ease.Linear);
 
                     sequence.Insert(0, tween);
@@ -121,15 +155,20 @@ namespace Solitaire.Presenters
                 sequence.SetAutoKill(false);
                 sequence.AppendInterval(1f);
 
-                for (int i = isReverse ? rectSuits.childCount - 1 : 0;
+                for (
+                    var i = isReverse ? rectSuits.childCount - 1 : 0;
                     isReverse ? i >= 0 : i < rectSuits.childCount;
-                    i += isReverse ? -1 : 1)
+                    i += isReverse ? -1 : 1
+                )
                 {
-                    Transform rect = rectSuits.GetChild(i);
+                    var rect = rectSuits.GetChild(i);
                     rect.transform.localScale = Vector3.zero;
 
-                    sequence.Append(rect.DOScale(Vector3.one, 0.125f).SetEase(Ease.InCubic))
-                        .Append(rect.DOPunchScale(Vector3.one * 0.5f, 0.125f).SetEase(Ease.OutCubic));
+                    sequence
+                        .Append(rect.DOScale(Vector3.one, 0.125f).SetEase(Ease.InCubic))
+                        .Append(
+                            rect.DOPunchScale(Vector3.one * 0.5f, 0.125f).SetEase(Ease.OutCubic)
+                        );
                 }
             }
             else

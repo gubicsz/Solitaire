@@ -1,6 +1,6 @@
+using System.Linq;
 using Solitaire.Models;
 using Solitaire.Services;
-using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,22 +10,38 @@ namespace Solitaire.Presenters
 {
     public class GamePresenter : MonoBehaviour
     {
-        [SerializeField] Physics2DRaycaster _cardRaycaster;
-        [SerializeField] PilePresenter _pileStock;
-        [SerializeField] PilePresenter _pileWaste;
-        [SerializeField] PilePresenter[] _pileFoundations;
-        [SerializeField] PilePresenter[] _pileTableaus;
-    
-        [Inject] readonly Game _game;
-        [Inject] readonly GameState _gameState;
-        [Inject] readonly OrientationState _orientation;
-        [Inject] readonly IAudioService _audioService;
+        private const float CamSizeLandscape = 4.25f;
+        private const float CamSizePortrait = 8.25f;
 
-        Camera _camera;
-        int _layerInteractable;
+        [SerializeField]
+        private Physics2DRaycaster _cardRaycaster;
 
-        const float CamSizeLandscape = 4.25f;
-        const float CamSizePortrait = 8.25f;
+        [SerializeField]
+        private PilePresenter _pileStock;
+
+        [SerializeField]
+        private PilePresenter _pileWaste;
+
+        [SerializeField]
+        private PilePresenter[] _pileFoundations;
+
+        [SerializeField]
+        private PilePresenter[] _pileTableaus;
+
+        [Inject]
+        private readonly IAudioService _audioService;
+
+        [Inject]
+        private readonly Game _game;
+
+        [Inject]
+        private readonly GameState _gameState;
+
+        [Inject]
+        private readonly OrientationState _orientation;
+
+        private Camera _camera;
+        private int _layerInteractable;
 
         private void Awake()
         {
@@ -42,9 +58,12 @@ namespace Solitaire.Presenters
             _gameState.State.Pairwise().Subscribe(HandleGameStateChanges).AddTo(this);
 
             // Initialize game
-            _game.Init(_pileStock.Pile, _pileWaste.Pile, 
-                _pileFoundations.Select(p => p.Pile).ToList(), 
-                _pileTableaus.Select(p => p.Pile).ToList());
+            _game.Init(
+                _pileStock.Pile,
+                _pileWaste.Pile,
+                _pileFoundations.Select(p => p.Pile).ToList(),
+                _pileTableaus.Select(p => p.Pile).ToList()
+            );
 
             SetCameraLayers(true);
         }
@@ -53,15 +72,13 @@ namespace Solitaire.Presenters
         {
             // Detect win condition
             if (_gameState.State.Value == Game.State.Playing)
-            {
                 _game.DetectWinCondition();
-            }
         }
 
         private void AdjustCamera(Orientation orientation)
         {
-            _camera.orthographicSize = (orientation == Orientation.Landscape ? 
-                CamSizeLandscape : CamSizePortrait);
+            _camera.orthographicSize =
+                orientation == Orientation.Landscape ? CamSizeLandscape : CamSizePortrait;
         }
 
         private void HandleGameStateChanges(Pair<Game.State> state)
@@ -86,15 +103,11 @@ namespace Solitaire.Presenters
         private void SetCameraLayers(bool cullGame)
         {
             if (cullGame)
-            {
                 // Every layer except Interactable
                 _camera.cullingMask = ~(1 << _layerInteractable);
-            }
             else
-            {
                 // Everything
                 _camera.cullingMask = ~0;
-            }
         }
     }
 }

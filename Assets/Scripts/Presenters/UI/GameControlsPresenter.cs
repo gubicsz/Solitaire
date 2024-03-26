@@ -8,22 +8,22 @@ namespace Solitaire.Presenters
 {
     public class GameControlsPresenter : OrientationAwarePresenter
     {
-        [SerializeField] Button _buttonOptions;
-        [SerializeField] Button _buttonHome;
-        [SerializeField] Button _buttonMatch;
-        [SerializeField] Button _buttonUndo;
-        [SerializeField] Button _buttonHint;
-        [SerializeField] Button _buttonLeaderboard;
+        [SerializeField] private Button _buttonOptions;
+        [SerializeField] private Button _buttonHome;
+        [SerializeField] private Button _buttonMatch;
+        [SerializeField] private Button _buttonUndo;
+        [SerializeField] private Button _buttonHint;
+        [SerializeField] private Button _buttonLeaderboard;
 
-        [Inject] readonly GameControls _gameControls;
-        [Inject] readonly GamePopup _gamePopup;
+        [Inject] private readonly GameControls _gameControls;
+        [Inject] private readonly GamePopup _gamePopup;
+        private RectTransform _rectHint;
+        private RectTransform _rectHome;
+        private RectTransform _rectLeaderboard;
+        private RectTransform _rectMatch;
 
-        RectTransform _rectOptions;
-        RectTransform _rectHome;
-        RectTransform _rectMatch;
-        RectTransform _rectUndo;
-        RectTransform _rectHint;
-        RectTransform _rectLeaderboard;
+        private RectTransform _rectOptions;
+        private RectTransform _rectUndo;
 
         private void Awake()
         {
@@ -54,7 +54,8 @@ namespace Solitaire.Presenters
             _rectMatch.anchoredPosition = new Vector2(isLandscape ? -70 : -55, _rectMatch.anchoredPosition.y);
             _rectUndo.anchoredPosition = new Vector2(isLandscape ? 70 : 55, _rectUndo.anchoredPosition.y);
             _rectHint.anchoredPosition = new Vector2(isLandscape ? 210 : 165, _rectHint.anchoredPosition.y);
-            _rectLeaderboard.anchoredPosition = new Vector2(isLandscape ? 350 : 275, _rectLeaderboard.anchoredPosition.y);
+            _rectLeaderboard.anchoredPosition =
+                new Vector2(isLandscape ? 350 : 275, _rectLeaderboard.anchoredPosition.y);
         }
     }
 }

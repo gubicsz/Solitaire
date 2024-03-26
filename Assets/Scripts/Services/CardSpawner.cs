@@ -1,16 +1,15 @@
-using Solitaire.Models;
-using Solitaire.Presenters;
 using System;
 using System.Collections.Generic;
+using Solitaire.Models;
+using Solitaire.Presenters;
 
 namespace Solitaire.Services
 {
     public class CardSpawner : ICardSpawner
     {
-        public IList<CardPresenter> Cards { get; private set; } = new List<CardPresenter>(52);
+        private readonly CardPresenter.Factory _factory;
 
         private readonly IList<CardPresenter> _tempCopies;
-        private readonly CardPresenter.Factory _factory;
 
         public CardSpawner(CardPresenter.Factory factory)
         {
@@ -18,25 +17,21 @@ namespace Solitaire.Services
             _tempCopies = new List<CardPresenter>();
         }
 
+        public IList<CardPresenter> Cards { get; } = new List<CardPresenter>(52);
+
         public void SpawnAll()
         {
             // Spawn cards
             foreach (Card.Suits suit in Enum.GetValues(typeof(Card.Suits)))
-            {
-                foreach (Card.Types type in Enum.GetValues(typeof(Card.Types)))
-                {
-                    Cards.Add(Spawn(suit, type));
-                }
-            }
+            foreach (Card.Types type in Enum.GetValues(typeof(Card.Types)))
+                Cards.Add(Spawn(suit, type));
         }
 
         public void DespawnAll()
         {
             // Despawn cards
             foreach (var card in Cards)
-            {
                 card.Dispose();
-            }
 
             // Clear list
             Cards.Clear();
@@ -51,34 +46,28 @@ namespace Solitaire.Services
         {
             // Handle error
             if (card == null)
-            {
                 return;
-            }
 
             // Despawn card
             card.Dispose();
 
             if (Cards.Contains(card))
-            {
                 Cards.Remove(card);
-            }
         }
 
         public IList<CardPresenter> MakeCopies(IList<Card> cards)
         {
             _tempCopies.Clear();
 
-            for (int i = 0; i < cards.Count; i++)
-            {
+            for (var i = 0; i < cards.Count; i++)
                 _tempCopies.Add(MakeCopy(cards[i]));
-            }
 
             return _tempCopies;
         }
 
         public CardPresenter MakeCopy(Card card)
         {
-            CardPresenter copy = Spawn(card.Suit, card.Type);
+            var copy = Spawn(card.Suit, card.Type);
             copy.transform.position = card.Position.Value;
             copy.Flip(card.IsFaceUp.Value);
 

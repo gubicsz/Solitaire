@@ -1,5 +1,5 @@
-using Solitaire.Models;
 using System.Collections.Generic;
+using Solitaire.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,10 +7,9 @@ namespace Solitaire.Services
 {
     public class DragAndDropHandler : IDragAndDropHandler
     {
-        readonly Camera _camera;
-        IList<Card> _draggedCards;
-
-        const int DragOrder = 100;
+        private const int DragOrder = 100;
+        private readonly Camera _camera;
+        private IList<Card> _draggedCards;
 
         public DragAndDropHandler()
         {
@@ -20,12 +19,12 @@ namespace Solitaire.Services
 
         public void BeginDrag(PointerEventData eventData, IList<Card> draggedCards)
         {
-            Vector3 dragPos = PointerToWorldPoint(eventData);
+            var dragPos = PointerToWorldPoint(eventData);
             _draggedCards = draggedCards;
 
-            for (int i = 0; i < _draggedCards.Count; i++)
+            for (var i = 0; i < _draggedCards.Count; i++)
             {
-                Card card = _draggedCards[i];
+                var card = _draggedCards[i];
                 card.DragOrigin = card.Position.Value;
                 card.DragOffset = card.DragOrigin - dragPos;
                 card.OrderToRestore = card.Pile.Cards.IndexOf(card);
@@ -36,34 +35,32 @@ namespace Solitaire.Services
 
         public void Drag(PointerEventData eventData)
         {
-            Vector3 dragPos = PointerToWorldPoint(eventData);
+            var dragPos = PointerToWorldPoint(eventData);
 
-            for (int i = 0; i < _draggedCards.Count; i++)
+            for (var i = 0; i < _draggedCards.Count; i++)
             {
-                Card card = _draggedCards[i];
+                var card = _draggedCards[i];
                 card.Position.Value = dragPos + card.DragOffset;
             }
         }
 
         public void Drop()
         {
-            for (int i = 0; i < _draggedCards.Count; i++)
+            for (var i = 0; i < _draggedCards.Count; i++)
             {
-                Card card = _draggedCards[i];
+                var card = _draggedCards[i];
                 card.IsDragged = false;
             }
         }
 
         public void EndDrag()
         {
-            for (int i = 0; i < _draggedCards.Count; i++)
+            for (var i = 0; i < _draggedCards.Count; i++)
             {
-                Card card = _draggedCards[i];
+                var card = _draggedCards[i];
 
                 if (!card.IsDragged)
-                {
                     continue;
-                }
 
                 card.IsDragged = false;
                 card.Order.Value = card.OrderToRestore;
@@ -73,7 +70,11 @@ namespace Solitaire.Services
 
         private Vector3 PointerToWorldPoint(PointerEventData eventData)
         {
-            Vector3 screenPoint = new Vector3(eventData.position.x, eventData.position.y, -_camera.transform.position.z);
+            var screenPoint = new Vector3(
+                eventData.position.x,
+                eventData.position.y,
+                -_camera.transform.position.z
+            );
             return _camera.ScreenToWorldPoint(screenPoint);
         }
     }

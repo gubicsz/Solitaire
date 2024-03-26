@@ -1,33 +1,34 @@
-using Solitaire.Models;
-using Solitaire.Services;
 using System;
 using System.Collections.Generic;
+using Solitaire.Models;
+using Solitaire.Services;
 using Zenject;
 
 namespace Solitaire.Commands
 {
-    public class DrawCardCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool> 
+    public class DrawCardCommand : ICommand, IDisposable, IPoolable<Pile, Pile, IMemoryPool>
     {
-        [Inject] readonly IAudioService _audioService;
-        [Inject] readonly Options _options;
+        [Inject]
+        private readonly IAudioService _audioService;
 
-        readonly List<Card> _cards = new List<Card>(3);
-        Pile _pileStock;
-        Pile _pileWaste;
-        IMemoryPool _pool;
+        private readonly List<Card> _cards = new(3);
+
+        [Inject]
+        private readonly Options _options;
+        private Pile _pileStock;
+        private Pile _pileWaste;
+        private IMemoryPool _pool;
 
         public void Execute()
         {
-            int count = _options.DrawThree.Value ? 3 : 1;
+            var count = _options.DrawThree.Value ? 3 : 1;
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                Card card = _pileStock.TopCard();
+                var card = _pileStock.TopCard();
 
                 if (card == null)
-                {
                     break;
-                }
 
                 card.Flip();
                 _pileWaste.AddCard(card);
@@ -39,9 +40,9 @@ namespace Solitaire.Commands
 
         public void Undo()
         {
-            for (int i = _cards.Count - 1; i >= 0; i--)
+            for (var i = _cards.Count - 1; i >= 0; i--)
             {
-                Card card = _cards[i];
+                var card = _cards[i];
                 card.Flip();
                 _pileStock.AddCard(card);
                 _cards.RemoveAt(i);
@@ -70,8 +71,6 @@ namespace Solitaire.Commands
             _cards.Clear();
         }
 
-        public class Factory : PlaceholderFactory<Pile, Pile, DrawCardCommand>
-        {
-        }
+        public class Factory : PlaceholderFactory<Pile, Pile, DrawCardCommand> { }
     }
 }

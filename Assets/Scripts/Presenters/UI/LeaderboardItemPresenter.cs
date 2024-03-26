@@ -6,9 +6,10 @@ namespace Solitaire.Presenters
 {
     public class LeaderboardItemPresenter : MonoBehaviour
     {
-        [SerializeField] TextMeshProUGUI _label;
+        [SerializeField]
+        private TextMeshProUGUI _label;
 
-        RectTransform _rect;
+        private RectTransform _rect;
 
         private void Awake()
         {
@@ -37,13 +38,10 @@ namespace Solitaire.Presenters
             return _rect.sizeDelta;
         }
 
-        void SetVisiblity(bool isVisible)
+        private void SetVisiblity(bool isVisible)
         {
-            if ((!gameObject.activeSelf && isVisible) ||
-                (gameObject.activeSelf && !isVisible))
-            {
+            if ((!gameObject.activeSelf && isVisible) || (gameObject.activeSelf && !isVisible))
                 gameObject.SetActive(isVisible);
-            }
         }
     }
 }

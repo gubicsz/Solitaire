@@ -1,12 +1,12 @@
 namespace Solitaire.Services
 {
     /// <summary>
-    /// Provides basic save / load functionality.
+    ///     Provides basic save / load functionality.
     /// </summary>
     public interface IStorageService
     {
         /// <summary>
-        /// Saves an object to the device.
+        ///     Saves an object to the device.
         /// </summary>
         /// <typeparam name="T">The type of the object.</typeparam>
         /// <param name="key">The key of the object.</param>
@@ -14,7 +14,7 @@ namespace Solitaire.Services
         void Save<T>(string key, T obj);
 
         /// <summary>
-        /// Loads an object from the device.
+        ///     Loads an object from the device.
         /// </summary>
         /// <typeparam name="T">The type of the object.</typeparam>
         /// <param name="key">The key of the object.</param>

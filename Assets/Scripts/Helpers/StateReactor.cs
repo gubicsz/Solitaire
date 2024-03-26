@@ -6,13 +6,14 @@ using UnityEngine;
 namespace Solitaire.Helpers
 {
     /// <summary>
-    /// Controls the visibility of an object based on the specified states.
+    ///     Controls the visibility of an object based on the specified states.
     /// </summary>
-    public abstract class StateReactor<T> : MonoBehaviour where T : Enum
+    public abstract class StateReactor<T> : MonoBehaviour
+        where T : Enum
     {
         [Tooltip("List of states in which this object should be visible.")]
         [SerializeField]
-        List<T> _visibleInStates;
+        private List<T> _visibleInStates;
 
         protected abstract StateModel<T> Model { get; }
 
@@ -28,9 +29,7 @@ namespace Solitaire.Helpers
         {
             // Handle error
             if (state == null)
-            {
                 return false;
-            }
 
             // Indicate whether the state is visible or not
             return _visibleInStates.Contains(state);

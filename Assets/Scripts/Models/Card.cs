@@ -6,21 +6,12 @@ namespace Solitaire.Models
 {
     public class Card
     {
-        [Serializable]
-        public class Config
-        {
-            public float AnimationDuration = 0.5f;
-            public Color[] Colors;
-            public Sprite[] SuitSprites;
-            public Sprite[] TypeSprites;
-        }
-
         public enum Suits : byte
         {
             Spade,
             Club,
             Heart,
-            Diamond,
+            Diamond
         }
 
         public enum Types : byte
@@ -37,29 +28,8 @@ namespace Solitaire.Models
             Ten,
             Jack,
             Queen,
-            King,
+            King
         }
-
-        public Suits Suit { get; private set; }
-        public Types Type { get; private set; }
-        public BoolReactiveProperty IsFaceUp { get; private set; }
-        public Vector3ReactiveProperty Position { get; private set; }
-        public IntReactiveProperty Order { get; private set; }
-        public FloatReactiveProperty Alpha { get; private set; }
-        public BoolReactiveProperty IsVisible { get; private set; }
-        public BoolReactiveProperty IsInteractable { get; private set; }
-
-        public Pile Pile { get; set; }
-        public Vector3 DragOrigin { get; set; }
-        public Vector3 DragOffset { get; set; }
-        public int OrderToRestore { get; set; }
-        public bool IsDragged { get; set; }
-
-        public bool IsInPile => Pile != null;
-        public bool IsOnBottom => Pile.BottomCard() == this;
-        public bool IsOnTop => Pile.TopCard() == this;
-        public bool IsMoveable => IsInPile && ((Pile.IsWaste && IsOnTop && IsFaceUp.Value) || (!Pile.IsWaste && IsFaceUp.Value));
-        public bool IsDrawable => IsInPile && Pile.IsStock && IsOnTop && !IsFaceUp.Value;
 
         public Card()
         {
@@ -70,6 +40,31 @@ namespace Solitaire.Models
             IsVisible = new BoolReactiveProperty(true);
             IsInteractable = new BoolReactiveProperty(true);
         }
+
+        public Suits Suit { get; private set; }
+        public Types Type { get; private set; }
+        public BoolReactiveProperty IsFaceUp { get; }
+        public Vector3ReactiveProperty Position { get; }
+        public IntReactiveProperty Order { get; }
+        public FloatReactiveProperty Alpha { get; }
+        public BoolReactiveProperty IsVisible { get; }
+        public BoolReactiveProperty IsInteractable { get; }
+
+        public Pile Pile { get; set; }
+        public Vector3 DragOrigin { get; set; }
+        public Vector3 DragOffset { get; set; }
+        public int OrderToRestore { get; set; }
+        public bool IsDragged { get; set; }
+
+        public bool IsInPile => Pile != null;
+        public bool IsOnBottom => Pile.BottomCard() == this;
+        public bool IsOnTop => Pile.TopCard() == this;
+
+        public bool IsMoveable =>
+            IsInPile
+            && ((Pile.IsWaste && IsOnTop && IsFaceUp.Value) || (!Pile.IsWaste && IsFaceUp.Value));
+
+        public bool IsDrawable => IsInPile && Pile.IsStock && IsOnTop && !IsFaceUp.Value;
 
         public void Init(Suits suit, Types type)
         {
@@ -94,17 +89,11 @@ namespace Solitaire.Models
 
         public int GetValue()
         {
-            if (Type == Types.Jack ||
-                Type == Types.Queen ||
-                Type == Types.King)
-            {
+            if (Type == Types.Jack || Type == Types.Queen || Type == Types.King)
                 return 10;
-            }
 
             if (Type == Types.Ace)
-            {
                 return 11;
-            }
 
             return (int)Type + 1;
         }
@@ -117,6 +106,15 @@ namespace Solitaire.Models
         public override string ToString()
         {
             return $"{Suit} {Type}";
+        }
+
+        [Serializable]
+        public class Config
+        {
+            public float AnimationDuration = 0.5f;
+            public Color[] Colors;
+            public Sprite[] SuitSprites;
+            public Sprite[] TypeSprites;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Solitaire.Services
 {
     public class PointsService : IPointsService
     {
-        public IntReactiveProperty Points { get; private set; } = new IntReactiveProperty();
+        public IntReactiveProperty Points { get; } = new();
 
         public void Set(int value)
         {

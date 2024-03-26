@@ -1,7 +1,4 @@
 ﻿namespace Solitaire.Services
 {
-    public interface IOrientationService
-    {
-
-    }
+    public interface IOrientationService { }
 }

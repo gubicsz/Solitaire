@@ -8,16 +8,16 @@ namespace Solitaire.Presenters
     [RequireComponent(typeof(Canvas))]
     public class GameStatePresenter : StateReactor<Game.State>
     {
-        [Inject] readonly GameState _gameState;
+        [Inject] private readonly GameState _gameState;
 
-        Canvas _canvas;
+        private Canvas _canvas;
+
+        protected override StateModel<Game.State> Model => _gameState;
 
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
         }
-
-        protected override StateModel<Game.State> Model => _gameState;
 
         protected override void SetVisibility(bool isVisible)
         {
